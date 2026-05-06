@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skedaddle — Real People. Real Places. Zero Friction.</title>
+  <meta name="description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:        #faf6ee;
+      --green-deep:   #1b3a2a;
+      --green-mid:    #2d5a3f;
+      --sienna:       #c4562a;
+      --sienna-light: #f0e4d8;
+      --text:         #1b3a2a;
+      --muted:        #5a7060;
+      --white:        #ffffff;
+      --border:       rgba(27, 58, 42, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+    section { width: 100%; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 246, 238, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2rem;
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--green-deep);
+      letter-spacing: 0.03em;
+      text-decoration: none;
+    }
+    .logo span { color: var(--sienna); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-deep); }
+    .nav-cta {
+      background: var(--green-deep);
+      color: var(--cream) !important;
+      padding: 0.55rem 1.3rem;
+      border-radius: 2rem;
+      font-weight: 500 !important;
+      letter-spacing: 0.04em !important;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--green-mid) !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--green-deep); border-radius: 2px; transition: all 0.3s; }
+    .mobile-menu { display: none; flex-direction: column; gap: 0; background: var(--cream); border-bottom: 1px solid var(--border); }
+    .mobile-menu a { font-size: 0.9rem; font-weight: 500; color: var(--muted); text-decoration: none; padding: 1rem 2rem; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.06em; }
+    .mobile-menu.open { display: flex; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 5rem 2rem 4rem;
+      max-width: 1160px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 2.5rem;
+      height: 1px;
+      background: var(--sienna);
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 600;
+      line-height: 1.05;
+      color: var(--green-deep);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+    .hero h1 em { font-style: italic; color: var(--sienna); }
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.72;
+      margin-bottom: 2.2rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--green-deep);
+      color: var(--cream);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 2rem;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--green-deep);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.85rem 2rem;
+      border-radius: 2rem;
+      border: 1.5px solid rgba(27, 58, 42, 0.3);
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: border-color 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-secondary:hover { border-color: var(--green-deep); transform: translateY(-1px); }
+
+    /* Hero right — visual card */
+    .hero-visual {
+      background: var(--green-deep);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(196, 86, 42, 0.12);
+    }
+    .hero-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .hero-stat-card {
+      background: rgba(250, 246, 238, 0.07);
+      border: 1px solid rgba(250, 246, 238, 0.1);
+      border-radius: 1rem;
+      padding: 1.2rem;
+    }
+    .hero-stat-card .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .hero-stat-card .num span { font-size: 1.1rem; color: var(--sienna); }
+    .hero-stat-card .lbl { font-size: 0.72rem; font-weight: 300; color: rgba(250,246,238,0.6); line-height: 1.4; }
+    .hero-visual-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(250,246,238,0.6);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── PROBLEM BAND ── */
+    .problem {
+      background: var(--green-deep);
+      padding: 5rem 2rem;
+    }
+    .problem-inner { max-width: 1160px; margin: 0 auto; }
+    .problem-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(196,86,42,0.9);
+      margin-bottom: 0.8rem;
+    }
+    .problem h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 3rem;
+      line-height: 1.2;
+    }
+    .vs-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .vs-col h3 {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(250,246,238,0.4);
+      margin-bottom: 1.2rem;
+    }
+    .vs-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
+    .vs-col ul li {
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: rgba(250,246,238,0.7);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      line-height: 1.5;
+    }
+    .vs-col ul li::before { content: '—'; opacity: 0.35; flex-shrink: 0; }
+    .vs-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding-top: 2.2rem;
+    }
+    .vs-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sienna); }
+    .vs-line { width: 1px; height: 80px; background: rgba(196, 86, 42, 0.25); }
+    .vs-col.sk {
+      background: rgba(250, 246, 238, 0.06);
+      border: 1px solid rgba(250, 246, 238, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem 1.75rem;
+    }
+    .vs-col.sk h3 { color: var(--sienna); }
+    .vs-col.sk ul li { color: var(--cream); font-weight: 400; }
+    .vs-col.sk ul li::before { content: '✦'; color: var(--sienna); opacity: 1; }
+
+    /* ── SECTION HEADER ── */
+    .section-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sienna);
+      margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 600;
+      color: var(--green-deep);
+      line-height: 1.12;
+      margin-bottom: 3rem;
+    }
+
+    /* ── PILLARS ── */
+    .pillars { padding: 5rem 2rem; }
+    .pillars-inner { max-width: 1160px; margin: 0 auto; }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .pillar {
+      padding: 2.2rem 2rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 3.5rem 1fr;
+      gap: 1.2rem;
+    }
+    .pillar:nth-child(odd) { border-right: 1px solid var(--border); }
+    .pillar:nth-child(3), .pillar:nth-child(4) { border-bottom: 1px solid var(--border); }
+    .pillar-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: rgba(27, 58, 42, 0.18);
+      line-height: 1;
+    }
+    .pillar-body h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--green-deep);
+      margin-bottom: 0.35rem;
+    }
+    .pillar-body h3 em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-left: 0.4rem;
+    }
+    .pillar-body p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0.8rem;
+    }
+    .pillar-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--sienna-light);
+      color: var(--sienna);
+      padding: 0.28rem 0.75rem;
+      border-radius: 1rem;
+    }
+
+    /* ── CONNECTION GRAPH ── */
+    .graph-section { padding: 0 2rem 5rem; }
+    .graph-inner { max-width: 1160px; margin: 0 auto; }
+    .graph-card {
+      background: var(--green-deep);
+      border-radius: 1.5rem;
+      padding: 3.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .graph-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(196, 86, 42, 0.08);
+    }
+    .graph-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(196, 86, 42, 0.9);
+      margin-bottom: 0.8rem;
+    }
+    .graph-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .graph-card p {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: rgba(250,246,238,0.7);
+      line-height: 1.7;
+    }
+    .graph-nodes { display: flex; flex-direction: column; gap: 0.75rem; }
+    .graph-node-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .graph-node {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: rgba(250,246,238,0.65);
+      border: 1px solid rgba(250,246,238,0.15);
+      padding: 0.35rem 0.9rem;
+      border-radius: 1rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .graph-node:hover { border-color: var(--sienna); color: var(--cream); }
+    .graph-insight {
+      background: rgba(196, 86, 42, 0.15);
+      border: 1px solid rgba(196, 86, 42, 0.25);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+    .graph-insight p {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: rgba(250,246,238,0.8) !important;
+      line-height: 1.55;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { padding: 5rem 2rem; background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .how-inner { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 0.5rem; }
+    .step { display: flex; gap: 1.5rem; }
+    .step-left { display: flex; flex-direction: column; align-items: center; }
+    .step-circle {
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      background: var(--green-deep);
+      color: var(--cream);
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-line { flex: 1; width: 1px; background: var(--border); margin: 0.25rem 0; min-height: 2.5rem; }
+    .step:last-child .step-line { display: none; }
+    .step-content { padding-top: 0.3rem; padding-bottom: 2rem; }
+    .step-content h4 { font-size: 0.95rem; font-weight: 500; color: var(--green-deep); margin-bottom: 0.35rem; }
+    .step-content p { font-size: 0.83rem; font-weight: 300; color: var(--muted); line-height: 1.65; }
+
+    /* ── TIERS ── */
+    .tiers { padding: 5rem 2rem; }
+    .tiers-inner { max-width: 1160px; margin: 0 auto; }
+    .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .tier-card {
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem 1.75rem;
+      background: var(--white);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .tier-card:hover { border-color: rgba(27, 58, 42, 0.3); transform: translateY(-3px); }
+    .tier-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: var(--sienna-light);
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    .tier-card h3 { font-size: 1rem; font-weight: 600; color: var(--green-deep); margin-bottom: 0.4rem; }
+    .tier-card .tier-sub { font-size: 0.72rem; font-weight: 500; color: var(--sienna); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+    .tier-card p { font-size: 0.83rem; font-weight: 300; color: var(--muted); line-height: 1.65; }
+
+    /* ── CTA ── */
+    .cta { padding: 6rem 2rem; text-align: center; }
+    .cta-inner { max-width: 600px; margin: 0 auto; }
+    .cta h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 600;
+      color: var(--green-deep);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .cta h2 em { font-style: italic; color: var(--sienna); }
+    .cta p { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 2.2rem; }
+    .email-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 440px;
+      margin: 0 auto 1rem;
+    }
+    .email-form input {
+      flex: 1;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.85rem 1.25rem;
+      border: 1.5px solid rgba(27, 58, 42, 0.22);
+      border-radius: 2rem;
+      background: var(--white);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .email-form input:focus { border-color: var(--green-deep); }
+    .email-form button {
+      background: var(--sienna);
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.85rem 1.6rem;
+      border-radius: 2rem;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .email-form button:hover { background: #a84420; }
+    .cta-note { font-size: 0.72rem; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--green-deep);
+      color: rgba(250,246,238,0.6);
+      padding: 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+    .footer-brand .logo { color: var(--cream); font-size: 1.5rem; }
+    .footer-brand p { font-size: 0.8rem; font-weight: 300; line-height: 1.65; margin-top: 0.8rem; color: rgba(250,246,238,0.5); }
+    .footer-col h4 { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,246,238,0.4); margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col ul li a { font-size: 0.82rem; font-weight: 300; color: rgba(250,246,238,0.6); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--cream); }
+    .footer-bottom {
+      max-width: 1160px;
+      margin: 2.5rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(250,246,238,0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: rgba(250,246,238,0.35);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 3rem; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .pillar:nth-child(odd) { border-right: none; }
+      .pillar:nth-child(3) { border-bottom: none; }
+      .graph-card { grid-template-columns: 1fr; gap: 2rem; }
+      .how-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .tiers-grid { grid-template-columns: 1fr 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .vs-grid { grid-template-columns: 1fr; }
+      .vs-divider { display: none; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .hero { padding: 3rem 1.25rem 3rem; }
+      .problem, .pillars, .graph-section, .how, .tiers, .cta { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .graph-card { padding: 2rem 1.5rem; }
+      .tiers-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .email-form { flex-direction: column; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-label, .hero h1, .hero-sub, .hero-actions { animation: fadeUp 0.7s ease both; }
+    .hero-label  { animation-delay: 0.1s; }
+    .hero h1     { animation-delay: 0.2s; }
+    .hero-sub    { animation-delay: 0.3s; }
+    .hero-actions{ animation-delay: 0.4s; }
+    .hero-visual { animation: fadeUp 0.8s ease 0.35s both; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">Sked<span>addle</span></a>
+      <ul class="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#tiers">Who it's for</a></li>
+        <li><a href="#graph">The tech</a></li>
+        <li><a href="#waitlist" class="nav-cta">Get early access</a></li>
+      </ul>
+      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#how">How it works</a>
+      <a href="#tiers">Who it's for</a>
+      <a href="#graph">The tech</a>
+      <a href="#waitlist">Get early access</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section>
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-label">A new kind of social</div>
+        <h1>Real people.<br><em>Real places.</em><br>Zero friction.</h1>
+        <p class="hero-sub">Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months. No browsing. No awkward cold messages. Just curated connection.</p>
+        <div class="hero-actions">
+          <a href="#waitlist" class="btn-primary">Join the waitlist</a>
+          <a href="#how" class="btn-secondary">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <p class="hero-visual-title">The coordination engine at work</p>
+        <div class="hero-stat-grid">
+          <div class="hero-stat-card">
+            <div class="num">4<span>×</span></div>
+            <div class="lbl">Faster social integration than traditional methods</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="num">5–7</div>
+            <div class="lbl">AI-matched Tribe size for optimal bonding</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="num">3<span>×</span></div>
+            <div class="lbl">Higher retention via activity-matched groups</div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="num">4</div>
+            <div class="lbl">Tiers: Individuals, Families, Orgs &amp; Enterprise</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="problem-inner">
+      <div class="problem-label">The gap in the market</div>
+      <h2>Why existing apps<br>aren't solving this.</h2>
+      <div class="vs-grid">
+        <div class="vs-col">
+          <h3>Meetup &amp; Eventbrite</h3>
+          <ul>
+            <li>Browse events and hope someone shows up</li>
+            <li>Random crowds with zero curation</li>
+            <li>One-off events — no continuity or follow-through</li>
+            <li>You handle all the planning and logistics</li>
+            <li>No learning loop, same experience every time</li>
+          </ul>
+        </div>
+        <div class="vs-divider">
+          <div class="vs-dot"></div>
+          <div class="vs-line"></div>
+          <div class="vs-dot"></div>
+        </div>
+        <div class="vs-col sk">
+          <h3>Skedaddle</h3>
+          <ul>
+            <li>AI matches you to a curated, compatible Tribe</li>
+            <li>Compatibility-first grouping across 5 dimensions</li>
+            <li>Ongoing coordination engine — repeat experiences</li>
+            <li>System handles all logistics, weather, venue, RSVP</li>
+            <li>Connection Graph learns and improves every match</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="pillars" id="tiers">
+    <div class="pillars-inner">
+      <div class="section-label">The platform</div>
+      <h2 class="section-title">Four layers.<br>One operating system for belonging.</h2>
+      <div class="pillars-grid">
+        <div class="pillar">
+          <div class="pillar-num">01</div>
+          <div class="pillar-body">
+            <h3>Tribes <em>individual layer</em></h3>
+            <p>Small, AI-matched cohorts of 5–7 people. Matched on availability, interests, life stage, personality, and geography. The system proposes weekly shared experiences and tracks connection strength over time. Strangers become real friends through repeated contact.</p>
+            <span class="pillar-tag">Strangers → real friends</span>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">02</div>
+          <div class="pillar-body">
+            <h3>Family Pods <em>household layer</em></h3>
+            <p>Families are multi-person systems with competing schedules and kid-specific constraints. Skedaddle coordinates internal family experiences and cross-matches families based on children's ages, parenting values, and activity preferences. Highest LTV segment in the platform.</p>
+            <span class="pillar-tag">Highest retention tier</span>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">03</div>
+          <div class="pillar-body">
+            <h3>Community OS <em>institution layer</em></h3>
+            <p>Churches, schools, and homeschool co-ops get a full belonging infrastructure. New members get household intake, interest capture, and automated matching to small groups, ministry roles, and activities. Admins track newcomer integration scores in real time.</p>
+            <span class="pillar-tag">SaaS revenue engine</span>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">04</div>
+          <div class="pillar-body">
+            <h3>Connection Graph™ <em>intelligence layer</em></h3>
+            <p>A behavioral property graph capturing every real-world experience outcome — who attended, satisfaction scores, repeat contact, trust signals, and retention effects. It learns what creates belonging and makes every future coordination smarter. This is the defensible moat.</p>
+            <span class="pillar-tag">The data advantage</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONNECTION GRAPH -->
+  <section class="graph-section" id="graph">
+    <div class="graph-inner">
+      <div class="graph-card">
+        <div>
+          <div class="graph-label">Connection Graph™</div>
+          <h2>The system learns<br>what creates<br>belonging.</h2>
+          <p>Every attended experience, satisfaction signal, and retained relationship feeds a proprietary graph that makes Skedaddle smarter and harder to copy over time. The data advantage compounds with every user on the platform.</p>
+          <div class="graph-insight">
+            <p>"Families matched via outdoor activities show 3× retention vs. dining-only events." — the graph learns this and shifts future coordination accordingly.</p>
+          </div>
+        </div>
+        <div>
+          <div class="graph-nodes">
+            <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,238,0.35);margin-bottom:0.5rem;">Graph nodes &amp; edges</p>
+            <div class="graph-node-row">
+              <span class="graph-node">individuals</span>
+              <span class="graph-node">households</span>
+              <span class="graph-node">organizations</span>
+            </div>
+            <div class="graph-node-row">
+              <span class="graph-node">locations</span>
+              <span class="graph-node">experiences</span>
+              <span class="graph-node">outcomes</span>
+            </div>
+            <div class="graph-node-row">
+              <span class="graph-node">trust signals</span>
+              <span class="graph-node">satisfaction scores</span>
+            </div>
+            <div class="graph-node-row">
+              <span class="graph-node">retention effects</span>
+              <span class="graph-node">repeat contact</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how" id="how">
+    <div class="how-inner">
+      <div>
+        <div class="section-label">Experience flow</div>
+        <h2 class="section-title">From sign-up<br>to real friendship.</h2>
+        <p style="font-size:0.88rem;font-weight:300;color:var(--muted);line-height:1.7;">The coordination engine handles everything from intake to outcome. You just show up.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Profile &amp; intake</h4>
+            <p>Life stage, interests, schedule, social comfort level, and personality style — captured once, refined continuously through behavior.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Tribe assignment</h4>
+            <p>The Assimilation Engine matches you to 5–7 compatible people nearby with overlapping availability and shared core interests.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>AI proposes the experience</h4>
+            <p>Weather check, venue selection, travel time fairness, RSVP flow — all handled automatically. You get a ready-to-confirm invite.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
+          <div class="step-content">
+            <h4>Show up and connect</h4>
+            <p>Post-experience feedback — attendance, satisfaction, re-engagement intent — feeds back into the Connection Graph, improving every future match.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section class="tiers" style="padding-top: 5rem; padding-bottom: 5rem;">
+    <div class="tiers-inner">
+      <div class="section-label">Who Skedaddle serves</div>
+      <h2 class="section-title">Built for every<br>stage of life.</h2>
+      <div class="tiers-grid">
+        <div class="tier-card">
+          <div class="tier-icon">🧭</div>
+          <h3>New to the city</h3>
+          <div class="tier-sub">Individual · Tribes</div>
+          <p>Skip months of awkward coffee chats. Skedaddle places you in a matched Tribe within days and gets your calendar filled with real experiences alongside compatible people.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-icon">🏡</div>
+          <h3>Families &amp; parents</h3>
+          <div class="tier-sub">Household · Family Pods</div>
+          <p>Coordinate your own household and find like-minded families for your kids. Values alignment, kids' age bands, and shared activity preferences — all matched automatically.</p>
+        </div>
+        <div class="tier-card">
+          <div class="tier-icon">🏛️</div>
+          <h3>Churches &amp; schools</h3>
+          <div class="tier-sub">Institution · Community OS</div>
+          <p>Turn a passive welcome email into a full belonging infrastructure. Know exactly how well each newcomer is integrating — and automate the coordination that makes them stay.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" id="waitlist">
+    <div class="cta-inner">
+      <h2>Ready to <em>skip</em><br>the awkward phase?</h2>
+      <p>Join the Skedaddle waitlist and be among the first to experience social coordination that actually works. Launching in select cities soon.</p>
+      <form class="email-form" onsubmit="handleSubmit(event)">
+        <input type="email" id="emailInput" placeholder="your@email.com" required />
+        <button type="submit">Join waitlist</button>
+      </form>
+      <p class="cta-note" id="formMsg">No spam. Unsubscribe anytime. Early access users help shape the product.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo">Sked<span>addle</span></a>
+        <p>An AI-orchestrated social coordination platform. We're not building social features. We're building the engine that turns aligned people into repeated real-world experiences.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#">Tribes</a></li>
+          <li><a href="#">Family Pods</a></li>
+          <li><a href="#">Community OS</a></li>
+          <li><a href="#">Connection Graph™</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Skedaddle Enterprises, Inc. All rights reserved.</span>
+      <span>Charlotte, NC — Confidential &amp; Proprietary</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const msg = document.getElementById('formMsg');
+      msg.textContent = '✓ You\'re on the list! We\'ll be in touch soon.';
+      msg.style.color = '#2d5a3f';
+      msg.style.fontWeight = '500';
+      document.getElementById('emailInput').value = '';
+      // TODO: wire to Firebase or your backend
+      console.log('Waitlist signup:', email);
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const id = link.getAttribute('href');
+        if (id === '#') return;
+        e.preventDefault();
+        document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('mobileMenu').classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+</html>
