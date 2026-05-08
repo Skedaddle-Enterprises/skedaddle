@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/swethaguruju/skedaddle#readme",
   "dependencies": {
-    "firebase": "^12.12.1"
+    "firebase": "^12.13.0"
   }
 }
