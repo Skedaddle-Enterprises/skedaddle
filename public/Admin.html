@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skedaddle — Waitlist Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Manrope',system-ui,sans-serif;background:#F2F2F7;color:#1C1C1E;-webkit-font-smoothing:antialiased}
+    :root{--bg:#F2F2F7;--surf:#fff;--navy:#1e1b4b;--amber:#9C6500;--amber-bg:#FEF4DC;--amber-bd:rgba(156,101,0,.18);--green:#0C7A50;--green-bg:#E2F7EE;--green-bd:rgba(12,122,80,.18);--coral:#B03020;--coral-bg:#FDECEA;--coral-bd:rgba(176,48,32,.15);--violet:#4A3DB5;--violet-bg:#EDEAFC;--muted:rgba(60,60,67,.52);--border:rgba(60,60,67,.13);--border2:rgba(60,60,67,.22)}
+    #loginScreen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
+    .login-box{background:var(--surf);border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center}
+    .login-badge{width:56px;height:56px;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:28px;font-weight:700;color:#fff;margin:0 auto 16px}
+    .login-box h1{font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--navy);margin-bottom:6px}
+    .login-box p{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .login-box input{width:100%;font-family:'Manrope',sans-serif;font-size:14px;padding:12px 16px;border:1.5px solid var(--border2);border-radius:12px;outline:none;background:var(--bg);color:var(--navy);transition:border-color .2s;margin-bottom:12px}
+    .login-box input:focus{border-color:var(--amber)}
+    .login-btn{width:100%;background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;padding:13px;border-radius:12px;border:none;cursor:pointer;transition:background .2s}
+    .login-btn:hover{background:var(--violet)}
+    .login-err{font-size:12px;color:var(--coral);margin-top:8px;display:none}
+    #adminScreen{display:none;min-height:100vh}
+    header{background:var(--navy);padding:0 24px}
+    .header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+    .header-logo{display:flex;align-items:center;gap:10px}
+    .header-badge{width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:18px;font-weight:700;color:#fff}
+    .header-title{font-family:Georgia,serif;font-size:18px;font-weight:700;color:#fff}
+    .header-title span{color:var(--amber)}
+    .header-right{display:flex;align-items:center;gap:12px}
+    .header-tag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--amber-bg);color:var(--amber);padding:5px 12px;border-radius:999px;border:1px solid var(--amber-bd)}
+    .logout-btn{font-size:12px;font-weight:600;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:8px;transition:color .2s}
+    .logout-btn:hover{color:#fff}
+    main{max-width:1280px;margin:0 auto;padding:32px 24px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+    .stat-card{background:var(--surf);border-radius:16px;padding:20px;border:1px solid var(--border)}
+    .stat-card.amber{background:var(--amber-bg);border-color:var(--amber-bd)}
+    .stat-card.green{background:var(--green-bg);border-color:var(--green-bd)}
+    .stat-card.violet{background:var(--violet-bg);border-color:rgba(74,61,181,.15)}
+    .stat-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .stat-value{font-family:Georgia,serif;font-size:32px;font-weight:700;color:var(--navy);line-height:1}
+    .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .stat-card.amber .stat-value{color:var(--amber)}
+    .stat-card.green .stat-value{color:var(--green)}
+    .stat-card.violet .stat-value{color:var(--violet)}
+    .table-card{background:var(--surf);border-radius:20px;border:1px solid var(--border);overflow:hidden}
+    .table-header{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+    .table-header-left h2{font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--navy)}
+    .table-header-left p{font-size:12px;color:var(--muted);margin-top:2px}
+    .table-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .search-input{font-family:'Manrope',sans-serif;font-size:13px;padding:8px 14px;border:1.5px solid var(--border2);border-radius:10px;outline:none;background:var(--bg);color:var(--navy);width:220px;transition:border-color .2s}
+    .search-input:focus{border-color:var(--amber)}
+    .action-btn{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;padding:9px 16px;border-radius:10px;border:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .action-btn.primary{background:var(--navy);color:#fff}
+    .action-btn.primary:hover{background:var(--violet)}
+    .action-btn.secondary{background:var(--bg);color:var(--navy);border:1.5px solid var(--border2)}
+    .action-btn.secondary:hover{border-color:var(--navy)}
+    .action-btn.green{background:var(--green);color:#fff}
+    .action-btn.green:hover{background:#0a5e3e}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    thead tr{background:var(--bg);border-bottom:1px solid var(--border)}
+    thead th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 20px;text-align:left;white-space:nowrap}
+    thead th.sortable{cursor:pointer;user-select:none}
+    thead th.sortable:hover{color:var(--navy)}
+    tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover{background:var(--bg)}
+    tbody td{padding:14px 20px;font-size:13px;font-weight:500;color:var(--navy);vertical-align:middle}
+    td.email a{color:var(--navy);text-decoration:none;font-weight:600}
+    td.email a:hover{color:var(--amber);text-decoration:underline}
+    .source-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px}
+    .source-badge.popup{background:var(--violet-bg);color:var(--violet);border:1px solid rgba(74,61,181,.2)}
+    .source-badge.landing{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+    .row-num{font-size:12px;color:var(--muted);font-weight:400}
+    .delete-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:6px;transition:all .2s}
+    .delete-btn:hover{color:var(--coral);background:var(--coral-bg)}
+    .loading-row td,.empty-row td{text-align:center;padding:48px 20px;color:var(--muted);font-size:14px}
+    .loading-spinner{display:inline-block;width:24px;height:24px;border:2.5px solid var(--border2);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:12px 18px;border-radius:12px;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
+    .toast.show{transform:translateY(0);opacity:1}
+    .table-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+    .page-info{font-size:12px;color:var(--muted)}
+    .page-btns{display:flex;gap:6px}
+    .page-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border2);background:var(--surf);cursor:pointer;font-size:13px;font-weight:600;color:var(--navy);transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .page-btn:hover{border-color:var(--navy)}
+    .page-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .page-btn:disabled{opacity:.4;cursor:not-allowed}
+    @media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr}.search-input{width:100%;flex:1}}
+    @media(max-width:480px){.stats-grid{grid-template-columns:1fr}main{padding:20px 16px}}
+  </style>
+</head>
+<body>
+
+  <script>
+    // ── PASTE YOUR FIREBASE CONFIG HERE (same as index.html) ─────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyBsFwrAHKI4kf85Tz4YLZersyvhrhpW3h4",
+      authDomain: "skedaddle-websitelanding.firebaseapp.com",
+      projectId: "skedaddle-websitelanding",
+      storageBucket: "skedaddle-websitelanding.firebasestorage.app",
+      messagingSenderId: "1005105410569",
+      appId: "1:1005105410569:web:bda3ce12c44f1740703ed8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <div id="loginScreen">
+    <div class="login-box">
+      <div class="login-badge">S</div>
+      <h1>Admin Dashboard</h1>
+      <p>Enter your admin password to view the waitlist.</p>
+      <input type="password" id="pwInput" placeholder="Admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <button class="login-btn" onclick="doLogin()">Sign in</button>
+      <div class="login-err" id="loginErr">Incorrect password. Try again.</div>
+    </div>
+  </div>
+
+  <div id="adminScreen">
+    <header>
+      <div class="header-inner">
+        <div class="header-logo">
+          <div class="header-badge">S</div>
+          <div class="header-title">Sked<span>addle</span></div>
+        </div>
+        <div class="header-right">
+          <div class="header-tag">Admin Dashboard</div>
+          <button class="logout-btn" onclick="doLogout()">Sign out</button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="stats-grid">
+        <div class="stat-card amber"><div class="stat-label">Total signups</div><div class="stat-value" id="statTotal">—</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card green"><div class="stat-label">Today</div><div class="stat-value" id="statToday">—</div><div class="stat-sub">New signups</div></div>
+        <div class="stat-card violet"><div class="stat-label">This week</div><div class="stat-value" id="statWeek">—</div><div class="stat-sub">Last 7 days</div></div>
+        <div class="stat-card"><div class="stat-label">From popup</div><div class="stat-value" id="statPopup">—</div><div class="stat-sub">vs CTA button</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-header-left">
+            <h2>Waitlist Signups</h2>
+            <p id="tableSubtitle">Loading...</p>
+          </div>
+          <div class="table-actions">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by email..." oninput="filterTable()"/>
+            <button class="action-btn secondary" onclick="loadData()">↻ Refresh</button>
+            <button class="action-btn green" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="sortable" onclick="sortBy('email')">Email ↕</th>
+                <th class="sortable" onclick="sortBy('timestamp')">Date Joined ↕</th>
+                <th>Time</th>
+                <th>Source</th>
+                <th>Page</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr class="loading-row"><td colspan="7"><div class="loading-spinner"></div><div>Loading waitlist data...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <div class="page-info" id="pageInfo">Showing — entries</div>
+          <div class="page-btns" id="pageBtns"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const ADMIN_PASSWORD = 'skedaddle26'; // ← Change this to your own password
+    const PAGE_SIZE = 25;
+    let allData = [], filtered = [], currentPage = 1, sortField = 'timestamp', sortDir = -1;
+
+    function doLogin() {
+      if (document.getElementById('pwInput').value === ADMIN_PASSWORD) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminScreen').style.display = 'block';
+        sessionStorage.setItem('sk_admin', '1');
+        loadData();
+      } else {
+        document.getElementById('loginErr').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+      }
+    }
+    function doLogout() { sessionStorage.removeItem('sk_admin'); location.reload(); }
+    if (sessionStorage.getItem('sk_admin') === '1') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminScreen').style.display = 'block';
+      loadData();
+    }
+
+    async function loadData() {
+      document.getElementById('tableBody').innerHTML = '<tr class="loading-row"><td colspan="7"><div class="loading-spinner"></div><div>Loading...</div></td></tr>';
+      try {
+        const snap = await db.collection('waitlist').get();
+        allData = snap.docs.map((doc,i) => ({ id: doc.id, ...doc.data(), docIndex: i+1 }));
+        updateStats(); filterTable();
+        showToast(`Loaded ${allData.length} entries`);
+      } catch(e) {
+        document.getElementById('tableBody').innerHTML = '<tr class="empty-row"><td colspan="7">❌ Could not connect to Firebase.<br><small style="font-size:11px;color:#B03020">Check your Firebase config in admin.html</small></td></tr>';
+      }
+    }
+
+    function updateStats() {
+      const now = new Date(), today = new Date(now.getFullYear(),now.getMonth(),now.getDate()), week = new Date(today.getTime()-7*86400000);
+      let t=0,w=0,p=0;
+      allData.forEach(r => {
+        const ts = r.timestamp?.toDate ? r.timestamp.toDate() : new Date(0);
+        if(ts>=today) t++; if(ts>=week) w++; if(r.source==='popup') p++;
+      });
+      document.getElementById('statTotal').textContent = allData.length;
+      document.getElementById('statToday').textContent = t;
+      document.getElementById('statWeek').textContent  = w;
+      document.getElementById('statPopup').textContent = p;
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      filtered = q ? allData.filter(r=>(r.email||'').toLowerCase().includes(q)) : [...allData];
+      filtered.sort((a,b) => {
+        if(sortField==='email') return sortDir*(a.email||'').localeCompare(b.email||'');
+        const ta=a.timestamp?.toDate?a.timestamp.toDate():new Date(0);
+        const tb=b.timestamp?.toDate?b.timestamp.toDate():new Date(0);
+        return sortDir*(ta-tb);
+      });
+      currentPage=1; renderTable();
+    }
+
+    function sortBy(f) { if(sortField===f) sortDir=-sortDir; else{sortField=f;sortDir=-1;} filterTable(); }
+
+    function renderTable() {
+      const start=(currentPage-1)*PAGE_SIZE, page=filtered.slice(start,start+PAGE_SIZE), total=filtered.length;
+      document.getElementById('tableSubtitle').textContent = `${total.toLocaleString()} ${total===1?'signup':'signups'} total`;
+      if(!total){
+        document.getElementById('tableBody').innerHTML='<tr class="empty-row"><td colspan="7">No results found</td></tr>';
+        document.getElementById('pageInfo').textContent='No entries';
+        document.getElementById('pageBtns').innerHTML=''; return;
+      }
+      document.getElementById('tableBody').innerHTML = page.map((r,i) => {
+        const ts=r.timestamp?.toDate?r.timestamp.toDate():new Date(0);
+        const date=ts.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+        const time=ts.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+        const src=r.source==='popup'?'popup':'landing';
+        const lbl=r.source==='popup'?'Popup':'CTA Button';
+        const pg=(r.page||'').replace('https://','').replace('http://','').split('/')[0];
+        return `<tr>
+          <td class="row-num">${start+i+1}</td>
+          <td class="email"><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></td>
+          <td>${date}</td>
+          <td style="color:var(--muted);font-size:12px">${time}</td>
+          <td><span class="source-badge ${src}">${lbl}</span></td>
+          <td style="font-size:11px;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(pg)||'—'}</td>
+          <td><button class="delete-btn" onclick="deleteEntry('${r.id}')" title="Delete">✕</button></td>
+        </tr>`;
+      }).join('');
+      const totalPages=Math.ceil(total/PAGE_SIZE), end=Math.min(start+PAGE_SIZE,total);
+      document.getElementById('pageInfo').textContent=`Showing ${start+1}–${end} of ${total.toLocaleString()} entries`;
+      let btns=`<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+      for(let p=1;p<=totalPages;p++){
+        if(p===1||p===totalPages||Math.abs(p-currentPage)<=2) btns+=`<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+        else if(Math.abs(p-currentPage)===3) btns+=`<span style="font-size:13px;color:var(--muted);padding:0 4px">…</span>`;
+      }
+      btns+=`<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+      document.getElementById('pageBtns').innerHTML=btns;
+    }
+
+    function goPage(p) { const max=Math.ceil(filtered.length/PAGE_SIZE); if(p<1||p>max)return; currentPage=p; renderTable(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    async function deleteEntry(id) {
+      if(!confirm('Remove this entry?')) return;
+      try { await db.collection('waitlist').doc(id).delete(); allData=allData.filter(r=>r.id!==id); updateStats(); filterTable(); showToast('Entry deleted'); }
+      catch(e) { showToast('Delete failed'); }
+    }
+
+    function exportCSV() {
+      if(!filtered.length){showToast('No data to export');return;}
+      const rows=[['#','Email','Date','Time','Source','Page']];
+      filtered.forEach((r,i)=>{
+        const ts=r.timestamp?.toDate?r.timestamp.toDate():new Date(0);
+        rows.push([i+1,r.email||'',ts.toLocaleDateString('en-US'),ts.toLocaleTimeString('en-US'),r.source||'',r.page||'']);
+      });
+      const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+      a.download=`skedaddle-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      showToast(`Exported ${filtered.length} rows`);
+    }
+
+    function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+  </script>
+</body>
+</html>

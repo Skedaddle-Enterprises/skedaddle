@@ -1,0 +1,29 @@
+rules_version = '2';
+
+// TODO: For stronger security, convert Admin.html to use Firebase Auth
+// (email/password sign-in) and gate `read` on `request.auth != null`.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /waitlist/{docId} {
+      allow read: if true;
+
+      allow create: if
+        request.resource.data.keys().hasOnly(['email', 'source', 'timestamp', 'page', 'userAgent'])
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 3
+        && request.resource.data.email.size() < 254
+        && request.resource.data.email.matches('.*@.*\\..*')
+        && request.resource.data.source in ['popup', 'landing_page_cta']
+        && request.resource.data.page is string
+        && request.resource.data.page.size() < 500
+        && request.resource.data.userAgent is string
+        && request.resource.data.userAgent.size() < 200;
+
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

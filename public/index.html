@@ -1,1137 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skedaddle — Real People,Real Places,Zero Friction.</title>
-  <meta name="description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months." />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skedaddle — Real People. Real Places. Zero Friction.</title>
+  <meta name="description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 
-  <link rel="icon" type="image/jpeg" href="logo.jpg" />
-  <link rel="apple-touch-icon" href="logo.jpg" />
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Skedaddle — Real People. Real Places. Zero Friction." />
-  <meta property="og:description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months." />
-  <meta property="og:image" content="logo.jpg" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Skedaddle — Real People. Real Places. Zero Friction." />
-  <meta name="twitter:description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months." />
-  <meta name="twitter:image" content="logo.jpg" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── RESET ────────────────────────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:var(--bg);color:var(--text)}
+    a{text-decoration:none}
 
-    :root {
-      --cream:        #f7f6ff;
-      --green-deep:   #1e1b4b;
-      --green-mid:    #2d2a6e;
-      --sienna:       #FCD12A;
-      --sienna-light: #fef5c0;
-      --lavender:     #eeebff;
-      --lavender-mid: #e0dbff;
-      --text:         #1e1b4b;
-      --muted:        #6b6896;
-      --white:        #ffffff;
-      --border:       rgba(30, 27, 75, 0.1);
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--white);
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── LAYOUT ── */
-    .container { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
-    section { width: 100%; }
-
-    /* ── NAV ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(250, 246, 238, 0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 2rem;
-      max-width: 1160px;
-      margin: 0 auto;
-    }
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--green-deep);
-      letter-spacing: 0.03em;
-      text-decoration: none;
-    }
-    .logo span { color: var(--sienna); }
-
-    /* ── LOGO MARK (S placeholder) ── */
-    .logo-mark {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-    }
-    .logo-mark-badge {
-      width: 2.4rem;
-      height: 2.4rem;
-      background: var(--green-deep);
-      border-radius: 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--cream);
-      letter-spacing: -0.02em;
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-    .logo-mark:hover .logo-mark-badge { background: var(--sienna); }
-    .logo-mark-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--green-deep);
-      letter-spacing: 0.03em;
-      line-height: 1;
-    }
-    .logo-mark-text span { color: var(--sienna); }
-    .nav-links, .nav-links li { list-style: none !important; }
-    .nav-links { display: flex; gap: 2rem; align-items: center; padding: 0; margin: 0; }
-    .nav-links a, .mobile-menu a { text-decoration: none !important; border-bottom: 0 !important; }
-    .nav-links a {
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--green-deep); }
-    .nav-cta {
-      background: var(--green-deep);
-      color: var(--cream) !important;
-      padding: 0.55rem 1.3rem;
-      border-radius: 2rem;
-      font-weight: 500 !important;
-      letter-spacing: 0.04em !important;
-      transition: background 0.2s !important;
-    }
-    .nav-cta:hover { background: var(--green-mid) !important; }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-    .hamburger span { display: block; width: 22px; height: 2px; background: var(--green-deep); border-radius: 2px; transition: all 0.3s; }
-    .mobile-menu { display: none; flex-direction: column; gap: 0; background: var(--white); list-style: none; }
-    .mobile-menu a { font-size: 0.9rem; font-weight: 500; color: var(--muted); text-decoration: none; padding: 1rem 2rem; text-transform: uppercase; letter-spacing: 0.06em; }
-    .mobile-menu a:hover { color: var(--green-deep); background: var(--cream); }
-    .mobile-menu.open { display: flex; }
-
-    /* ── HERO ── */
-    .hero {
-      padding: 5rem 2rem 4rem;
-      max-width: 1160px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .hero-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--sienna);
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .hero-label::before {
-      content: '';
-      display: inline-block;
-      width: 2.5rem;
-      height: 1px;
-      background: var(--sienna);
-    }
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3rem, 5vw, 4.5rem);
-      font-weight: 600;
-      line-height: 1.05;
-      color: var(--green-deep);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
-    }
-    .hero h1 em { font-style: italic; color: var(--sienna); }
-    .hero-sub {
-      font-size: 1.05rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.72;
-      margin-bottom: 2.2rem;
-    }
-    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--green-deep);
-      color: var(--cream);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      padding: 0.85rem 2rem;
-      border-radius: 2rem;
-      border: none;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: background 0.2s, transform 0.15s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: var(--green-mid); transform: translateY(-1px); }
-    .btn-secondary {
-      background: transparent;
-      color: var(--green-deep);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      padding: 0.85rem 2rem;
-      border-radius: 2rem;
-      border: 1.5px solid rgba(27, 58, 42, 0.3);
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      transition: border-color 0.2s, transform 0.15s;
-      text-decoration: none;
-      display: inline-block;
-    }
-    .btn-secondary:hover { border-color: var(--green-deep); transform: translateY(-1px); }
-
-    /* Hero right — visual card */
-    .hero-visual {
-      background: var(--green-deep);
-      border-radius: 1.5rem;
-      padding: 2.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-visual::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 160px; height: 160px;
-      border-radius: 50%;
-      background: rgba(252, 209, 42, 0.12);
-    }
-    .hero-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-    .hero-stat-card {
-      background: rgba(250, 246, 238, 0.07);
-      border: 1px solid rgba(250, 246, 238, 0.1);
-      border-radius: 1rem;
-      padding: 1.2rem;
-    }
-    .hero-stat-card .num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: var(--cream);
-      line-height: 1;
-      margin-bottom: 0.4rem;
-    }
-    .hero-stat-card .num span { font-size: 1.1rem; color: var(--sienna); }
-    .hero-stat-card .lbl { font-size: 0.72rem; font-weight: 300; color: rgba(250,246,238,0.6); line-height: 1.4; }
-    .hero-visual-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 300;
-      font-style: italic;
-      color: rgba(250,246,238,0.6);
-      margin-bottom: 1.5rem;
+    /* ── TOKENS (iOS design system) ──────────────────────────── */
+    :root{
+      --bg:          #F2F2F7;
+      --surf:        #FFFFFF;
+      --text:        #1C1C1E;
+      --muted:       rgba(60,60,67,.52);
+      --amber:       #9C6500;
+      --amber-bg:    #FEF4DC;
+      --amber-bd:    rgba(156,101,0,.18);
+      --violet:      #4A3DB5;
+      --violet-bg:   #EDEAFC;
+      --violet-bd:   rgba(74,61,181,.15);
+      --green:       #0C7A50;
+      --green-bg:    #E2F7EE;
+      --green-bd:    rgba(12,122,80,.18);
+      --coral:       #B03020;
+      --coral-bg:    #FDECEA;
+      --coral-bd:    rgba(176,48,32,.15);
+      --border:      rgba(60,60,67,.13);
+      --border2:     rgba(60,60,67,.22);
+      --navy:        #1e1b4b;
     }
 
-    /* ── PROBLEM BAND ── */
-    .problem {
-      background: var(--green-deep);
-      padding: 5rem 2rem;
-    }
-    .problem-inner { max-width: 1160px; margin: 0 auto; }
-    .problem-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(252,209,42,0.9);
-      margin-bottom: 0.8rem;
-    }
-    .problem h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 600;
-      color: var(--cream);
-      margin-bottom: 3rem;
-      line-height: 1.2;
-    }
-    .vs-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-    .vs-col h3 {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(250,246,238,0.4);
-      margin-bottom: 1.2rem;
-    }
-    .vs-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
-    .vs-col ul li {
-      font-size: 0.88rem;
-      font-weight: 300;
-      color: rgba(250,246,238,0.7);
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      line-height: 1.5;
-    }
-    .vs-col ul li::before { content: '—'; opacity: 0.35; flex-shrink: 0; }
-    .vs-divider {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding-top: 2.2rem;
-    }
-    .vs-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sienna); }
-    .vs-line { width: 1px; height: 80px; background: rgba(252, 209, 42, 0.25); }
-    .vs-col.sk {
-      background: rgba(250, 246, 238, 0.06);
-      border: 1px solid rgba(250, 246, 238, 0.1);
-      border-radius: 1rem;
-      padding: 1.5rem 1.75rem;
-    }
-    .vs-col.sk h3 { color: var(--sienna); }
-    .vs-col.sk ul li { color: var(--cream); font-weight: 400; }
-    .vs-col.sk ul li::before { content: '✦'; color: var(--sienna); opacity: 1; }
+    /* ── HELPERS ─────────────────────────────────────────────── */
+    .container{max-width:1160px;margin:0 auto;padding:0 20px}
+    .sk-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .sk-card{background:var(--surf);border-radius:16px;border:1px solid var(--border);padding:18px}
+    .sk-card.amber{background:var(--amber-bg);border-color:var(--amber-bd)}
+    .sk-card.violet{background:var(--violet-bg);border-color:var(--violet-bd)}
+    .sk-card.green{background:var(--green-bg);border-color:var(--green-bd)}
+    .sk-card.coral{background:var(--coral-bg);border-color:var(--coral-bd)}
+    .sk-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px;border:1px solid}
+    .sk-tag.amber{color:var(--amber);background:var(--amber-bg);border-color:var(--amber-bd)}
+    .sk-tag.violet{color:var(--violet);background:var(--violet-bg);border-color:var(--violet-bd)}
+    .sk-tag.green{color:var(--green);background:var(--green-bg);border-color:var(--green-bd)}
+    .sk-tag.coral{color:var(--coral);background:var(--coral-bg);border-color:var(--coral-bd)}
 
-    /* ── SECTION HEADER ── */
-    .section-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--sienna);
-      margin-bottom: 0.6rem;
-    }
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 600;
-      color: var(--green-deep);
-      line-height: 1.12;
-      margin-bottom: 3rem;
-    }
+    /* ── TICKER ───────────────────────────────────────────────── */
+    .ticker{background:var(--navy);overflow:hidden;padding:9px 0;position:relative;z-index:101}
+    .ticker-track{display:inline-flex;animation:tickerScroll 30s linear infinite}
+    .ticker:hover .ticker-track{animation-play-state:paused}
+    .ticker-item{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.75);padding:0 24px;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+    .ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);display:inline-block}
+    @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-    /* ── PILLARS ── */
-    .pillars { padding: 5rem 2rem; }
-    .pillars-inner { max-width: 1160px; margin: 0 auto; }
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-    }
-    .pillar {
-      padding: 2.2rem 2rem;
-      border-top: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 3.5rem 1fr;
-      gap: 1.2rem;
-      background: var(--white);
-      transition: background 0.2s;
-    }
-    .pillar:hover { background: var(--lavender); }
-    .pillar:nth-child(odd) { border-right: 1px solid var(--border); }
-    .pillar:nth-child(3), .pillar:nth-child(4) { border-bottom: 1px solid var(--border); }
-    .pillar-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.8rem;
-      font-weight: 300;
-      color: rgba(27, 58, 42, 0.18);
-      line-height: 1;
-    }
-    .pillar-body h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--green-deep);
-      margin-bottom: 0.35rem;
-    }
-    .pillar-body h3 em {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-left: 0.4rem;
-    }
-    .pillar-body p {
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.7;
-      margin-bottom: 0.8rem;
-    }
-    .pillar-tag {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: var(--sienna-light);
-      color: var(--sienna);
-      padding: 0.28rem 0.75rem;
-      border-radius: 1rem;
-    }
+    /* ── NAV ──────────────────────────────────────────────────── */
+    nav{position:sticky;top:0;z-index:100;background:rgba(242,242,247,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;max-width:1160px;margin:0 auto}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-logo-badge{width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;font-family:Georgia,serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+    .nav-logo:hover .nav-logo-badge{background:var(--amber)}
+    .nav-logo-text{font-family:Georgia,serif;font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-.3px}
+    .nav-logo-text span{color:var(--amber)}
+    .nav-links{display:flex;gap:24px;list-style:none;align-items:center}
+    .nav-links a{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+    .nav-links a:hover{color:var(--navy)}
+    .nav-cta{background:var(--navy);color:#fff !important;padding:9px 18px;border-radius:999px;transition:background .2s !important}
+    .nav-cta:hover{background:var(--violet) !important}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px}
+    .mobile-menu{display:none;flex-direction:column;background:var(--bg);border-bottom:1px solid var(--border)}
+    .mobile-menu a{font-size:14px;font-weight:600;color:var(--muted);text-decoration:none;padding:14px 20px;border-bottom:1px solid var(--border)}
+    .mobile-menu.open{display:flex}
 
-    /* ── CONNECTION GRAPH ── */
-    .graph-section { padding: 0 2rem 5rem; }
-    .graph-inner { max-width: 1160px; margin: 0 auto; }
-    .graph-card {
-      background: var(--green-deep);
-      border-radius: 1.5rem;
-      padding: 3.5rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .graph-card::after {
-      content: '';
-      position: absolute;
-      bottom: -60px; right: -60px;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: rgba(252, 209, 42, 0.08);
-    }
-    .graph-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(252, 209, 42, 0.9);
-      margin-bottom: 0.8rem;
-    }
-    .graph-card h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
-      font-weight: 600;
-      color: var(--cream);
-      line-height: 1.15;
-      margin-bottom: 1rem;
-    }
-    .graph-card p {
-      font-size: 0.9rem;
-      font-weight: 300;
-      color: rgba(250,246,238,0.7);
-      line-height: 1.7;
-    }
-    .graph-nodes { display: flex; flex-direction: column; gap: 0.75rem; }
-    .graph-node-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-    .graph-node {
-      font-size: 0.75rem;
-      font-weight: 400;
-      color: rgba(250,246,238,0.65);
-      border: 1px solid rgba(250,246,238,0.15);
-      padding: 0.35rem 0.9rem;
-      border-radius: 1rem;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .graph-node:hover { border-color: var(--sienna); color: var(--cream); }
-    .graph-insight {
-      background: var(--lavender);
-      border: 1px solid var(--lavender-mid);
-      border-radius: 0.75rem;
-      padding: 1rem 1.25rem;
-      margin-top: 1rem;
-    }
-    .graph-insight p {
-      font-size: 0.8rem;
-      font-style: italic;
-      color: var(--text) !important;
-      line-height: 1.55;
-    }
+    /* ── POPUP ────────────────────────────────────────────────── */
+    .popup-overlay{position:fixed;inset:0;background:rgba(30,27,75,.55);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+    .popup-overlay.visible{opacity:1;visibility:visible}
+    .popup-overlay.visible .popup-box{animation:slideUp .4s ease forwards}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .popup-box{background:var(--surf);border-radius:20px;padding:36px 28px 28px;max-width:420px;width:100%;text-align:center;position:relative;border:1px solid var(--border2)}
+    .popup-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1;padding:4px}
+    .popup-icon{width:52px;height:52px;background:var(--amber-bg);border-radius:999px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;border:1px solid var(--amber-bd)}
+    .popup-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--amber-bg);color:var(--amber);padding:4px 12px;border-radius:999px;border:1px solid var(--amber-bd);margin-bottom:10px}
+    .popup-box h2{font-family:Georgia,serif;font-size:24px;font-weight:700;color:var(--navy);margin-bottom:8px;line-height:1.2}
+    .popup-box h2 em{font-style:italic;color:var(--amber)}
+    .popup-box p{font-size:13px;font-weight:400;color:var(--muted);line-height:1.65;margin-bottom:20px}
+    .popup-form{display:flex;gap:6px;margin-bottom:10px}
+    .popup-form input{flex:1;font-family:'Manrope',sans-serif;font-size:13px;padding:11px 14px;border:1.5px solid var(--border2);border-radius:999px;outline:none;transition:border-color .2s;background:var(--bg);color:var(--text)}
+    .popup-form input:focus{border-color:var(--amber)}
+    .popup-form button{background:var(--amber);color:#fff;font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;padding:11px 18px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;transition:background .2s}
+    .popup-form button:hover{background:#7a4e00}
+    .popup-dismiss{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Manrope',sans-serif;text-decoration:underline;text-underline-offset:2px}
 
-    /* ── HOW IT WORKS ── */
-    .how { padding: 5rem 2rem; background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .how-inner { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
-    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 0.5rem; }
-    .step { display: flex; gap: 1.5rem; }
-    .step-left { display: flex; flex-direction: column; align-items: center; }
-    .step-circle {
-      width: 2.2rem;
-      height: 2.2rem;
-      border-radius: 50%;
-      background: var(--green-deep);
-      color: var(--cream);
-      font-size: 0.75rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .step-line { flex: 1; width: 1px; background: var(--border); margin: 0.25rem 0; min-height: 2.5rem; }
-    .step:last-child .step-line { display: none; }
-    .step-content { padding-top: 0.3rem; padding-bottom: 2rem; }
-    .step-content h4 { font-size: 0.95rem; font-weight: 500; color: var(--green-deep); margin-bottom: 0.35rem; }
-    .step-content p { font-size: 0.83rem; font-weight: 300; color: var(--muted); line-height: 1.65; }
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero{padding:64px 20px 48px;border-bottom:1px solid var(--border)}
+    .hero-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+    .hero-label{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .hero-label::before{content:'';display:inline-block;width:32px;height:1px;background:var(--amber)}
+    .hero-label span{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+    .hero h1{font-family:Georgia,serif;font-size:clamp(2.6rem,4.5vw,3.8rem);font-weight:700;line-height:1.05;color:var(--navy);margin-bottom:20px;letter-spacing:-.02em}
+    .hero h1 em{font-style:italic;color:var(--amber)}
+    .hero-sub{font-size:15px;font-weight:400;color:var(--muted);line-height:1.72;margin-bottom:28px;max-width:480px}
+    .hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+    .btn-primary{background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:13px 24px;border-radius:999px;border:none;cursor:pointer;transition:background .2s,transform .15s;text-decoration:none;display:inline-block}
+    .btn-primary:hover{background:var(--violet);transform:translateY(-1px)}
+    .btn-secondary{background:transparent;color:var(--navy);font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;padding:13px 24px;border-radius:999px;border:1.5px solid var(--border2);cursor:pointer;transition:border-color .2s,transform .15s;text-decoration:none;display:inline-block}
+    .btn-secondary:hover{border-color:var(--navy);transform:translateY(-1px)}
 
-    /* ── TIERS ── */
-    .tiers { padding: 5rem 2rem; }
-    .tiers-inner { max-width: 1160px; margin: 0 auto; }
-    .tiers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .tier-card {
-      border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      padding: 2rem 1.75rem;
-      background: var(--white);
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .tier-card:hover { border-color: rgba(27, 58, 42, 0.3); transform: translateY(-3px); }
-    .tier-icon {
-      width: 2.5rem;
-      height: 2.5rem;
-      background: var(--sienna-light);
-      border-radius: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1.2rem;
-      font-size: 1rem;
-    }
-    .tier-card h3 { font-size: 1rem; font-weight: 600; color: var(--green-deep); margin-bottom: 0.4rem; }
-    .tier-card .tier-sub { font-size: 0.72rem; font-weight: 500; color: var(--sienna); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
-    .tier-card p { font-size: 0.83rem; font-weight: 300; color: var(--muted); line-height: 1.65; }
+    /* Hero right card */
+    .hero-visual{background:var(--navy);border-radius:20px;padding:24px;position:relative;overflow:hidden}
+    .hero-visual::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(74,61,181,.15)}
+    .hero-visual-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:16px;letter-spacing:.04em}
+    .hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hero-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px}
+    .hero-stat-num{font-family:Georgia,serif;font-size:28px;font-weight:700;color:#fff;line-height:1;margin-bottom:6px}
+    .hero-stat-num span{font-size:14px;color:var(--amber)}
+    .hero-stat-lbl{font-size:11px;font-weight:400;color:rgba(255,255,255,.5);line-height:1.45}
 
-    /* ── CTA ── */
-    .cta { padding: 6rem 2rem; text-align: center; }
-    .cta-inner { max-width: 600px; margin: 0 auto; }
-    .cta h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 4vw, 3.2rem);
-      font-weight: 600;
-      color: var(--green-deep);
-      line-height: 1.15;
-      margin-bottom: 1rem;
-    }
-    .cta h2 em { font-style: italic; color: var(--sienna); }
-    .cta p { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 2.2rem; }
-    .email-form {
-      display: flex;
-      gap: 0.5rem;
-      max-width: 440px;
-      margin: 0 auto 1rem;
-    }
-    .email-form input {
-      flex: 1;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.9rem;
-      padding: 0.85rem 1.25rem;
-      border: 1.5px solid rgba(27, 58, 42, 0.22);
-      border-radius: 2rem;
-      background: var(--white);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .email-form input:focus { border-color: var(--green-deep); }
-    .email-form button {
-      background: var(--sienna);
-      color: var(--white);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 0.85rem 1.6rem;
-      border-radius: 2rem;
-      border: none;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s;
-    }
-    .email-form button:hover { background: #d4a800; }
-    .cta-note { font-size: 0.72rem; color: var(--muted); }
+    /* ── HERO IMAGE ───────────────────────────────────────────── */
+    .hero-img-section{width:100%;position:relative;overflow:hidden;height:440px;border-bottom:1px solid var(--border)}
+    .hero-img-section img{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(.82) saturate(.88)}
+    .hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(30,27,75,.7) 0%,rgba(30,27,75,.2) 55%,transparent 100%);display:flex;align-items:flex-end;padding:40px 48px}
+    .hero-img-caption{max-width:500px}
+    .hero-img-caption .cap-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:8px}
+    .hero-img-caption h2{font-family:Georgia,serif;font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:700;color:#fff;line-height:1.15;margin-bottom:10px}
+    .hero-img-caption h2 em{font-style:italic;color:#f0c080}
+    .hero-img-caption p{font-size:14px;font-weight:400;color:rgba(255,255,255,.7);line-height:1.6}
 
-    /* ── FOOTER ── */
-    footer {
-      background: var(--green-deep);
-      color: rgba(250,246,238,0.6);
-      padding: 3rem 2rem;
-    }
-    .footer-inner {
-      max-width: 1160px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 3rem;
-    }
-    .footer-brand .logo { color: var(--cream); font-size: 1.5rem; }
-    .footer-brand p { font-size: 0.8rem; font-weight: 300; line-height: 1.65; margin-top: 0.8rem; color: rgba(250,246,238,0.5); }
-    .footer-col h4 { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(250,246,238,0.4); margin-bottom: 1rem; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-    .footer-col ul li a { font-size: 0.82rem; font-weight: 300; color: rgba(250,246,238,0.6); text-decoration: none; transition: color 0.2s; }
-    .footer-col ul li a:hover { color: var(--cream); }
-    .footer-bottom {
-      max-width: 1160px;
-      margin: 2.5rem auto 0;
-      padding-top: 1.5rem;
-      border-top: 1px solid rgba(250,246,238,0.1);
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      color: rgba(250,246,238,0.35);
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
+    /* ── COMPARISON ───────────────────────────────────────────── */
+    .comparison{background:var(--navy);padding:72px 20px}
+    .comp-inner{max-width:1160px;margin:0 auto}
+    .comp-header .sk-label{color:rgba(255,255,255,.4);margin-bottom:8px}
+    .comp-header h2{font-family:Georgia,serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:#fff;margin-bottom:40px;line-height:1.2}
+    .comp-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:start}
+    .comp-col h3{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:16px}
+    .comp-col ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+    .comp-col ul li{font-size:14px;font-weight:400;color:rgba(255,255,255,.65);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+    .comp-col ul li::before{content:'—';opacity:.3;flex-shrink:0}
+    .comp-divider{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:28px}
+    .comp-dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}
+    .comp-line{width:1px;height:80px;background:rgba(156,101,0,.25)}
+    .comp-col.sk{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:18px 20px}
+    .comp-col.sk h3{color:var(--amber)}
+    .comp-col.sk ul li{color:#fff;font-weight:500}
+    .comp-col.sk ul li::before{content:'✦';color:var(--amber);opacity:1}
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; gap: 3rem; }
-      .pillars-grid { grid-template-columns: 1fr; }
-      .pillar:nth-child(odd) { border-right: none; }
-      .pillar:nth-child(3) { border-bottom: none; }
-      .graph-card { grid-template-columns: 1fr; gap: 2rem; }
-      .how-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-      .tiers-grid { grid-template-columns: 1fr 1fr; }
-      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
-      .vs-grid { grid-template-columns: 1fr; }
-      .vs-divider { display: none; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-    }
-    @media (max-width: 600px) {
-      .hero { padding: 3rem 1.25rem 3rem; }
-      .problem, .pillars, .graph-section, .how, .tiers, .cta { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .graph-card { padding: 2rem 1.5rem; }
-      .tiers-grid { grid-template-columns: 1fr; }
-      .footer-inner { grid-template-columns: 1fr; }
-      .email-form { flex-direction: column; }
-    }
+    /* ── PILLARS ──────────────────────────────────────────────── */
+    .pillars{padding:72px 20px}
+    .pillars-inner{max-width:1160px;margin:0 auto}
+    .pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+    .pillar{padding:28px 24px;border-top:1px solid var(--border);display:grid;grid-template-columns:48px 1fr;gap:14px;background:var(--surf);transition:background .2s}
+    .pillar:hover{background:var(--violet-bg)}
+    .pillar:nth-child(odd){border-right:1px solid var(--border)}
+    .pillar:nth-child(3),.pillar:nth-child(4){border-bottom:1px solid var(--border)}
+    .pillar-num{font-family:Georgia,serif;font-size:2.8rem;font-weight:300;color:rgba(30,27,75,.15);line-height:1}
+    .pillar-body h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+    .pillar-body h3 em{font-family:Georgia,serif;font-style:italic;font-weight:400;font-size:13px;color:var(--muted);margin-left:6px}
+    .pillar-body p{font-size:13px;font-weight:400;color:var(--muted);line-height:1.7;margin-bottom:10px}
+    .pillar-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--amber-bg);color:var(--amber);padding:4px 10px;border-radius:999px;border:1px solid var(--amber-bd)}
 
-    /* ── HERO IMAGE STRIP ── */
-    .hero-image-strip {
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      height: 480px;
-      border-bottom: 1px solid var(--border);
-    }
-    .hero-image-strip img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 40%;
-      display: block;
-      filter: brightness(0.82) saturate(0.9);
-    }
-    .hero-image-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(27, 58, 42, 0.72) 0%,
-        rgba(27, 58, 42, 0.2) 55%,
-        transparent 100%
-      );
-      display: flex;
-      align-items: flex-end;
-      padding: 3rem 3.5rem;
-    }
-    .hero-image-caption {
-      max-width: 480px;
-    }
-    .hero-image-caption .cap-label {
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(250,246,238,0.6);
-      margin-bottom: 0.6rem;
-    }
-    .hero-image-caption h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 600;
-      color: var(--cream);
-      line-height: 1.15;
-      margin-bottom: 0.8rem;
-    }
-    .hero-image-caption h2 em { font-style: italic; color: #f0c4a8; }
-    .hero-image-caption p {
-      font-size: 0.88rem;
-      font-weight: 300;
-      color: rgba(250,246,238,0.75);
-      line-height: 1.65;
-    }
+    /* ── TRIBE CARD ───────────────────────────────────────────── */
+    .tribe-section{padding:72px 20px;background:var(--violet-bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .tribe-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+    .tribe-card{background:var(--surf);border-radius:20px;padding:24px;box-shadow:0 8px 40px rgba(74,61,181,.12);max-width:360px;margin:0 auto;border:1px solid var(--border)}
+    .tribe-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+    .tribe-proposal-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    .tribe-card-title{font-family:Georgia,serif;font-size:2.2rem;font-weight:700;color:var(--navy);line-height:1.05}
+    .tribe-match-badge{background:var(--amber);color:var(--navy);border-radius:12px;padding:10px 14px;text-align:center;flex-shrink:0;min-width:80px}
+    .tribe-match-badge .pct{font-family:Georgia,serif;font-size:26px;font-weight:700;line-height:1;display:block}
+    .tribe-match-badge .lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:block;margin-top:2px;color:rgba(30,27,75,.7)}
+    .tribe-ai-quote{background:var(--violet-bg);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid var(--violet-bd);position:relative}
+    .tribe-ai-quote p{font-family:Georgia,serif;font-size:14px;font-style:italic;color:var(--navy);line-height:1.6}
+    .tribe-ai-quote .sparkle{position:absolute;top:12px;right:14px;font-size:14px;opacity:.25}
+    .tribe-members-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .tribe-avatars{display:flex;margin-bottom:14px}
+    .tribe-avatar{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--surf);margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;font-family:'Manrope',sans-serif;font-weight:700;color:#fff;font-size:14px}
+    .tribe-avatar-more{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--surf);background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+    .tribe-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+    .tribe-cta{width:100%;background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;margin-bottom:10px;transition:background .2s}
+    .tribe-cta:hover{background:var(--violet)}
+    .tribe-see-another{text-align:center;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+    .tribe-text h2{font-family:Georgia,serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.12;margin-bottom:16px}
+    .tribe-text h2 em{font-style:italic;color:var(--amber)}
+    .tribe-text p{font-size:14px;font-weight:400;color:var(--muted);line-height:1.75;margin-bottom:12px}
+    .tribe-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:16px}
+    .tribe-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:400;color:var(--text);line-height:1.5}
+    .feat-icon{width:22px;height:22px;background:var(--amber-bg);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--amber);font-weight:700;flex-shrink:0;border:1px solid var(--amber-bd)}
 
-    /* ── LAUNCH POPUP ── */
-    .popup-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(27, 58, 42, 0.6);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.35s ease, visibility 0.35s ease;
-    }
-    .popup-overlay.visible {
-      opacity: 1;
-      visibility: visible;
-    }
-    .popup-overlay.visible .popup-box {
-      animation: slideUp 0.4s ease forwards;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .popup-box {
-      background: var(--white);
-      border-radius: 1.5rem;
-      padding: 3rem 2.5rem 2.5rem;
-      max-width: 440px;
-      width: 100%;
-      text-align: center;
-      position: relative;
-    }
-    .popup-close {
-      position: absolute;
-      top: 1rem; right: 1.2rem;
-      background: none;
-      border: none;
-      font-size: 1.3rem;
-      color: var(--muted);
-      cursor: pointer;
-      line-height: 1;
-      padding: 0.25rem;
-      transition: color 0.2s;
-    }
-    .popup-close:hover { color: var(--green-deep); }
-    .popup-icon {
-      width: 3.5rem;
-      height: 3.5rem;
-      background: var(--sienna-light);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.2rem;
-      font-size: 1.4rem;
-    }
-    .popup-box h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--green-deep);
-      line-height: 1.15;
-      margin-bottom: 0.6rem;
-    }
-    .popup-box h2 em { font-style: italic; color: var(--sienna); }
-    .popup-box p {
-      font-size: 0.88rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.65;
-      margin-bottom: 1.8rem;
-    }
-    .popup-email-row {
-      display: flex;
-      gap: 0.4rem;
-      margin-bottom: 0.8rem;
-    }
-    .popup-email-row input {
-      flex: 1;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.85rem;
-      padding: 0.7rem 1rem;
-      border: 1.5px solid rgba(27,58,42,0.2);
-      border-radius: 2rem;
-      background: var(--white);
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .popup-email-row input:focus { border-color: var(--green-deep); }
-    .popup-email-row button {
-      background: var(--sienna);
-      color: var(--white);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 0.7rem 1.2rem;
-      border-radius: 2rem;
-      border: none;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.2s;
-    }
-    .popup-email-row button:hover { background: #d4a800; }
-    .popup-dismiss {
-      font-size: 0.75rem;
-      color: var(--muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      font-family: 'Outfit', sans-serif;
-    }
-    .popup-badge {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      background: var(--sienna-light);
-      color: var(--sienna);
-      padding: 0.3rem 0.8rem;
-      border-radius: 1rem;
-      margin-bottom: 1rem;
-    }
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .hero-label, .hero h1, .hero-sub, .hero-actions { animation: fadeUp 0.7s ease both; }
-    .hero-label  { animation-delay: 0.1s; }
-    .hero h1     { animation-delay: 0.2s; }
-    .hero-sub    { animation-delay: 0.3s; }
-    .hero-actions{ animation-delay: 0.4s; }
-    .hero-visual { animation: fadeUp 0.8s ease 0.35s both; }
+    /* ── GRAPH ────────────────────────────────────────────────── */
+    .graph-section{padding:64px 20px}
+    .graph-inner{max-width:1160px;margin:0 auto}
+    .graph-card{background:var(--navy);border-radius:20px;padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden}
+    .graph-card::after{content:'';position:absolute;bottom:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(74,61,181,.12)}
+    .graph-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(156,101,0,.9);margin-bottom:10px}
+    .graph-card h2{font-family:Georgia,serif;font-size:2.2rem;font-weight:700;color:#fff;line-height:1.15;margin-bottom:12px}
+    .graph-card p{font-size:14px;font-weight:400;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:16px}
+    .graph-insight{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 16px}
+    .graph-insight p{font-family:Georgia,serif;font-size:13px;font-style:italic;color:rgba(255,255,255,.75)!important;line-height:1.6;margin:0}
+    .graph-nodes{display:flex;flex-direction:column;gap:10px}
+    .graph-nodes-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:4px}
+    .graph-node-row{display:flex;gap:6px;flex-wrap:wrap}
+    .graph-node{font-size:11px;font-weight:500;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.14);padding:5px 12px;border-radius:999px;transition:border-color .2s,color .2s;cursor:default}
+    .graph-node:hover{border-color:var(--amber);color:#fff}
 
-    /* ── NAV LOGO IMAGE ── */
-    .nav-logo-img {
-      height: 2rem;
-      width: auto;
-      display: block;
-      object-fit: contain;
-    }
-    .logo-img-link { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
-    .nav-brand-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem;
-      font-weight: 700;
-      font-style: italic;
-      color: var(--green-deep);
-      letter-spacing: 0.02em;
-      line-height: 1;
-    }
-    .nav-brand-text span { color: var(--sienna); font-style: normal; }
-    .footer-logo-img {
-      height: 1.6rem;
-      width: auto;
-      display: block;
-      object-fit: contain;
-    }
+    /* ── HOW IT WORKS ─────────────────────────────────────────── */
+    .how{padding:72px 20px;background:var(--surf);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .how-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:start}
+    .steps{display:flex;flex-direction:column}
+    .step{display:flex;gap:20px}
+    .step-left{display:flex;flex-direction:column;align-items:center}
+    .step-circle{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-line{flex:1;width:1px;background:var(--border);margin:4px 0;min-height:40px}
+    .step:last-child .step-line{display:none}
+    .step-content{padding-top:4px;padding-bottom:28px}
+    .step-content h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+    .step-content p{font-size:13px;font-weight:400;color:var(--muted);line-height:1.65}
 
-    /* ── SCROLLING TICKER ── */
-    .ticker-bar {
-      background: var(--green-deep);
-      color: var(--cream);
-      overflow: hidden;
-      white-space: nowrap;
-      padding: 0.55rem 0;
-      position: relative;
-      z-index: 101;
-    }
-    .ticker-track {
-      display: inline-flex;
-      animation: tickerScroll 32s linear infinite;
-    }
-    .ticker-bar:hover .ticker-track { animation-play-state: paused; }
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0 2.5rem;
-      white-space: nowrap;
-    }
-    .ticker-dot {
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--sienna);
-      flex-shrink: 0;
-      display: inline-block;
-    }
-    @keyframes tickerScroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+    /* ── TIERS ────────────────────────────────────────────────── */
+    .tiers{padding:72px 20px}
+    .tiers-inner{max-width:1160px;margin:0 auto}
+    .tiers-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .tier-card{padding:24px;background:var(--violet-bg);border:1px solid var(--violet-bd);border-radius:16px;transition:transform .2s,box-shadow .2s}
+    .tier-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(74,61,181,.12)}
+    .tier-icon{width:40px;height:40px;background:var(--amber-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;border:1px solid var(--amber-bd)}
+    .tier-card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+    .tier-sub{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;display:block}
+    .tier-card p{font-size:13px;font-weight:400;color:var(--muted);line-height:1.65}
 
-    /* ── TRIBE CARD SECTION ── */
-    .tribe-section {
-      padding: 5rem 2rem;
-      background: var(--lavender);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+    /* ── APP DOWNLOAD TEASER ──────────────────────────────────── */
+    .app-section{padding:56px 20px;background:var(--surf);border-top:1px solid var(--border)}
+    .app-inner{max-width:1160px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+    .app-text .sk-label{margin-bottom:8px}
+    .app-text h3{font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+    .app-text h3 em{font-style:italic;color:var(--amber)}
+    .app-text p{font-size:13px;color:var(--muted);max-width:420px;line-height:1.6}
+    .app-badges{display:flex;gap:10px;flex-wrap:wrap}
+    .app-badge{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s}
+    .app-badge:hover{background:var(--violet)}
+    .app-badge-icon{font-size:18px}
+
+    /* ── CTA ──────────────────────────────────────────────────── */
+    .cta{padding:80px 20px;text-align:center}
+    .cta-inner{max-width:560px;margin:0 auto}
+    .cta h2{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--navy);line-height:1.15;margin-bottom:12px}
+    .cta h2 em{font-style:italic;color:var(--amber)}
+    .cta p{font-size:15px;font-weight:400;color:var(--muted);line-height:1.7;margin-bottom:28px}
+    .email-form{display:flex;gap:6px;max-width:420px;margin:0 auto 12px}
+    .email-form input{flex:1;font-family:'Manrope',sans-serif;font-size:14px;padding:13px 18px;border:1.5px solid var(--border2);border-radius:999px;background:var(--surf);color:var(--text);outline:none;transition:border-color .2s}
+    .email-form input:focus{border-color:var(--amber)}
+    .email-form button{background:var(--amber);color:#fff;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:13px 22px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;transition:background .2s}
+    .email-form button:hover{background:#7a4e00}
+    .cta-note{font-size:12px;color:var(--muted)}
+
+    /* ── FOOTER ───────────────────────────────────────────────── */
+    footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 20px 24px}
+    .footer-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px}
+    .footer-brand .nav-logo{margin-bottom:14px;display:inline-flex}
+    .footer-brand .nav-logo-badge{background:rgba(255,255,255,.1)}
+    .footer-brand .nav-logo-text{color:#fff}
+    .footer-brand p{font-size:12px;font-weight:400;line-height:1.65;color:rgba(255,255,255,.4);max-width:260px}
+    .footer-col h4{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .footer-col ul li a{font-size:13px;font-weight:400;color:rgba(255,255,255,.55);text-decoration:none;transition:color .2s}
+    .footer-col ul li a:hover{color:#fff}
+    .footer-bottom{max-width:1160px;margin:0 auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.28);flex-wrap:wrap;gap:6px}
+    .footer-bottom a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}
+    .footer-bottom a:hover{color:rgba(255,255,255,.7)}
+
+    /* ── SECTION HEADERS ─────────────────────────────────────── */
+    .section-header{margin-bottom:40px}
+    .section-header .sk-label{margin-bottom:8px}
+    .section-header h2{font-family:Georgia,serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.12}
+
+    /* ── ANIMATIONS ───────────────────────────────────────────── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .hero-label{animation:fadeUp .6s ease .1s both}
+    .hero h1{animation:fadeUp .7s ease .2s both}
+    .hero-sub{animation:fadeUp .7s ease .3s both}
+    .hero-btns{animation:fadeUp .7s ease .4s both}
+    .hero-visual{animation:fadeUp .8s ease .35s both}
+
+    /* ── RESPONSIVE ───────────────────────────────────────────── */
+    @media(max-width:900px){
+      .hero-inner,.tribe-inner,.how-inner,.graph-card{grid-template-columns:1fr}
+      .hero-visual,.graph-card::after{display:none}
+      .pillars-grid{grid-template-columns:1fr}
+      .pillar:nth-child(odd){border-right:none}
+      .pillar:nth-child(3){border-bottom:none}
+      .tiers-grid{grid-template-columns:1fr 1fr}
+      .footer-inner{grid-template-columns:1fr 1fr;gap:24px}
+      .comp-grid{grid-template-columns:1fr}
+      .comp-divider{display:none}
+      .nav-links{display:none}
+      .hamburger{display:flex}
+      .hero-img-overlay{padding:24px 24px}
     }
-    .tribe-inner {
-      max-width: 1160px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: center;
-    }
-    .tribe-card-mockup {
-      background: var(--white);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      box-shadow: 0 4px 40px rgba(30,27,75,0.1);
-      max-width: 360px;
-      margin: 0 auto;
-    }
-    .tribe-card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1.2rem;
-    }
-    .tribe-proposal-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-    }
-    .tribe-card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.4rem;
-      font-weight: 700;
-      color: var(--green-deep);
-      line-height: 1.05;
-    }
-    .tribe-match-badge {
-      background: var(--sienna);
-      color: var(--green-deep);
-      border-radius: 0.9rem;
-      padding: 0.6rem 0.9rem;
-      text-align: center;
-      flex-shrink: 0;
-      min-width: 80px;
-    }
-    .tribe-match-badge .match-pct {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      line-height: 1;
-      display: block;
-    }
-    .tribe-match-badge .match-lbl {
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      display: block;
-      margin-top: 0.15rem;
-    }
-    .tribe-ai-quote {
-      background: var(--lavender);
-      border-radius: 1rem;
-      padding: 1.1rem 1.2rem;
-      margin-bottom: 1.4rem;
-      position: relative;
-    }
-    .tribe-ai-quote p {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      font-style: italic;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .tribe-ai-quote .sparkle {
-      position: absolute;
-      top: 0.8rem; right: 1rem;
-      font-size: 1.1rem;
-      opacity: 0.3;
-    }
-    .tribe-members-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-    .tribe-avatars {
-      display: flex;
-      margin-bottom: 1.2rem;
-    }
-    .tribe-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2.5px solid var(--white);
-      margin-right: -10px;
-      object-fit: cover;
-      background: var(--lavender-mid);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    .tribe-avatar-more {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2.5px solid var(--white);
-      margin-right: -10px;
-      background: var(--green-deep);
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.72rem;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-    .tribe-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.4rem;
-    }
-    .tribe-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: #f0f0f8;
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 400;
-      padding: 0.4rem 0.9rem;
-      border-radius: 2rem;
-      border: 1px solid var(--border);
-    }
-    .tribe-cta-btn {
-      width: 100%;
-      background: var(--green-deep);
-      color: var(--white);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 0.95rem;
-      border-radius: 0.85rem;
-      border: none;
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      margin-bottom: 0.8rem;
-      transition: background 0.2s;
-    }
-    .tribe-cta-btn:hover { background: var(--green-mid); }
-    .tribe-see-another {
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--green-deep);
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-    .tribe-text h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 3.5vw, 3rem);
-      font-weight: 600;
-      color: var(--green-deep);
-      line-height: 1.12;
-      margin-bottom: 1.2rem;
-    }
-    .tribe-text h2 em { font-style: italic; color: var(--sienna); filter: brightness(0.8); }
-    .tribe-text p {
-      font-size: 0.9rem;
-      font-weight: 300;
-      color: var(--muted);
-      line-height: 1.75;
-      margin-bottom: 1rem;
-    }
-    .tribe-feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
-    .tribe-feature-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      font-size: 0.88rem;
-      font-weight: 400;
-      color: var(--text);
-      line-height: 1.5;
-    }
-    .tribe-feature-list li .icon {
-      width: 1.6rem;
-      height: 1.6rem;
-      background: var(--sienna);
-      border-radius: 0.4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      flex-shrink: 0;
-      margin-top: 0.05rem;
-    }
-    @media (max-width: 900px) {
-      .tribe-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-      .tribe-card-mockup { max-width: 100%; }
+    @media(max-width:600px){
+      .hero{padding:40px 16px 32px}
+      .comparison,.pillars,.tribe-section,.graph-section,.how,.tiers,.cta,.app-section{padding-left:16px;padding-right:16px}
+      .tiers-grid{grid-template-columns:1fr}
+      .footer-inner{grid-template-columns:1fr}
+      .email-form,.popup-form{flex-direction:column}
     }
   </style>
 </head>
 <body>
 
+  <!-- FIREBASE CONFIG — fill in your credentials -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBsFwrAHKI4kf85Tz4YLZersyvhrhpW3h4",
+      authDomain: "skedaddle-websitelanding.firebaseapp.com",
+      projectId: "skedaddle-websitelanding",
+      storageBucket: "skedaddle-websitelanding.firebasestorage.app",
+      messagingSenderId: "1005105410569",
+      appId: "1:1005105410569:web:bda3ce12c44f1740703ed8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function saveToWaitlist(email, source) {
+      try {
+        await db.collection("waitlist").add({
+          email:     email,
+          source:    source,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          page:      window.location.href,
+          userAgent: navigator.userAgent.substring(0, 100)
+        });
+        return true;
+      } catch(e) {
+        console.error("Firestore error:", e);
+        return false;
+      }
+    }
+  </script>
+
   <!-- LAUNCH POPUP -->
   <div class="popup-overlay" id="launchPopup">
     <div class="popup-box">
-      <button class="popup-close" onclick="closePopup()" aria-label="Close">✕</button>
+      <button class="popup-close" onclick="closePopup()">✕</button>
       <div class="popup-icon">🚀</div>
       <div class="popup-badge">Coming soon</div>
       <h2>App <em>launching</em> soon.</h2>
       <p>Skedaddle is putting the finishing touches on the coordination engine. Drop your email and you'll be first through the door when we launch in your city.</p>
-      <div class="popup-email-row">
-        <input type="email" id="popupEmail" placeholder="your@email.com" />
+      <div class="popup-form">
+        <input type="email" id="popupEmail" placeholder="your@email.com"/>
         <button onclick="handlePopupSubmit()">Notify me</button>
       </div>
       <button class="popup-dismiss" onclick="closePopup()">No thanks, I'll wait</button>
     </div>
   </div>
 
-  <!-- SCROLLING TICKER -->
-  <div class="ticker-bar" role="marquee" aria-label="Announcement">
+  <!-- TICKER -->
+  <div class="ticker" role="marquee">
     <div class="ticker-track">
-      <!-- First copy -->
       <span class="ticker-item">🚀 App launching soon <span class="ticker-dot"></span></span>
       <span class="ticker-item">Join the waitlist today <span class="ticker-dot"></span></span>
       <span class="ticker-item">AI-matched real-world experiences <span class="ticker-dot"></span></span>
@@ -1153,9 +387,9 @@
   <!-- NAV -->
   <nav>
     <div class="nav-inner">
-      <a href="#" class="logo-img-link">
-        <img src="logo.jpg" alt="Skedaddle" class="nav-logo-img" />
-        <span class="nav-brand-text">Skedaddle</span>
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-badge">S</div>
+        <div class="nav-logo-text">Sked<span>addle</span></div>
       </a>
       <ul class="nav-links">
         <li><a href="#how">How it works</a></li>
@@ -1178,48 +412,34 @@
   <!-- HERO -->
   <section>
     <div class="hero">
-      <div class="hero-left">
-        <div class="hero-label">A new kind of social</div>
-        <h1>Real people.<br><em>Real places.</em><br>Zero friction.</h1>
-        <p class="hero-sub">Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months. No browsing. No awkward cold messages. Just curated connection.</p>
-        <div class="hero-actions">
-          <a href="#waitlist" class="btn-primary">Join the waitlist</a>
-          <a href="#how" class="btn-secondary">See how it works</a>
+      <div class="hero-inner">
+        <div>
+          <div class="hero-label"><span>A new kind of social</span></div>
+          <h1>Real people.<br><em>Real places.</em><br>Zero friction.</h1>
+          <p class="hero-sub">Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months. No browsing. No awkward cold messages. Just curated connection.</p>
+          <div class="hero-btns">
+            <a href="#waitlist" class="btn-primary">Join the waitlist</a>
+            <a href="#how" class="btn-secondary">See how it works</a>
+          </div>
         </div>
-      </div>
-      <div class="hero-visual">
-        <p class="hero-visual-title">The coordination engine at work</p>
-        <div class="hero-stat-grid">
-          <div class="hero-stat-card">
-            <div class="num">4<span>×</span></div>
-            <div class="lbl">Faster social integration than traditional methods</div>
-          </div>
-          <div class="hero-stat-card">
-            <div class="num">5–7</div>
-            <div class="lbl">AI-matched Tribe size for optimal bonding</div>
-          </div>
-          <div class="hero-stat-card">
-            <div class="num">3<span>×</span></div>
-            <div class="lbl">Higher retention via activity-matched groups</div>
-          </div>
-          <div class="hero-stat-card">
-            <div class="num">4</div>
-            <div class="lbl">Tiers: Individuals, Families, Orgs &amp; Enterprise</div>
+        <div class="hero-visual">
+          <p class="hero-visual-label">The coordination engine at work</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-num">4<span>×</span></div><div class="hero-stat-lbl">Faster social integration than traditional methods</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">5–7</div><div class="hero-stat-lbl">AI-matched Tribe size for optimal bonding</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">3<span>×</span></div><div class="hero-stat-lbl">Higher retention via activity-matched groups</div></div>
+            <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-lbl">Tiers: Individuals, Families, Orgs & Enterprise</div></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- HERO IMAGE STRIP -->
-  <section class="hero-image-strip">
-    <img
-      src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=85&auto=format&fit=crop"
-      alt="Group of friends enjoying an outdoor experience together"
-      loading="eager"
-    />
-    <div class="hero-image-overlay">
-      <div class="hero-image-caption">
+  <!-- HERO IMAGE -->
+  <section class="hero-img-section">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=85&auto=format&fit=crop" alt="Group of friends enjoying an outdoor experience together" loading="eager"/>
+    <div class="hero-img-overlay">
+      <div class="hero-img-caption">
         <div class="cap-label">What Skedaddle creates</div>
         <h2>Strangers today.<br><em>Real friends</em> by next weekend.</h2>
         <p>AI-matched groups. Real places. Zero logistics. This is what belonging looks like at scale.</p>
@@ -1227,14 +447,16 @@
     </div>
   </section>
 
-  <!-- PROBLEM -->
-  <section class="problem">
-    <div class="problem-inner">
-      <div class="problem-label">The gap in the market</div>
-      <h2>Why existing apps<br>aren't solving this.</h2>
-      <div class="vs-grid">
-        <div class="vs-col">
-          <h3>Existing apps</h3>
+  <!-- COMPARISON -->
+  <section class="comparison">
+    <div class="comp-inner">
+      <div class="comp-header">
+        <div class="sk-label">The gap in the market</div>
+        <h2>Why existing apps<br>aren't solving this.</h2>
+      </div>
+      <div class="comp-grid">
+        <div class="comp-col">
+          <h3>Meetup & Eventbrite</h3>
           <ul>
             <li>Browse events and hope someone shows up</li>
             <li>Random crowds with zero curation</li>
@@ -1243,12 +465,12 @@
             <li>No learning loop, same experience every time</li>
           </ul>
         </div>
-        <div class="vs-divider">
-          <div class="vs-dot"></div>
-          <div class="vs-line"></div>
-          <div class="vs-dot"></div>
+        <div class="comp-divider">
+          <div class="comp-dot"></div>
+          <div class="comp-line"></div>
+          <div class="comp-dot"></div>
         </div>
-        <div class="vs-col sk">
+        <div class="comp-col sk">
           <h3>Skedaddle</h3>
           <ul>
             <li>AI matches you to a curated, compatible Tribe</li>
@@ -1263,16 +485,18 @@
   </section>
 
   <!-- PILLARS -->
-  <section class="pillars">
+  <section class="pillars" id="tiers">
     <div class="pillars-inner">
-      <div class="section-label">The platform</div>
-      <h2 class="section-title">Four layers.<br>One operating system for belonging.</h2>
+      <div class="section-header">
+        <div class="sk-label">The platform</div>
+        <h2>Four layers.<br>One operating system for belonging.</h2>
+      </div>
       <div class="pillars-grid">
         <div class="pillar">
           <div class="pillar-num">01</div>
           <div class="pillar-body">
             <h3>Tribes <em>individual layer</em></h3>
-            <p>Small, AI-matched cohorts of 5–7 people. Matched on availability, interests, life stage, personality, and geography. The system proposes weekly shared experiences and tracks connection strength over time. Strangers become real friends through repeated contact.</p>
+            <p>Small, AI-matched cohorts of 5–7 people. Matched on availability, interests, life stage, personality, and geography. The system proposes weekly shared experiences and tracks connection strength over time.</p>
             <span class="pillar-tag">Strangers → real friends</span>
           </div>
         </div>
@@ -1280,7 +504,7 @@
           <div class="pillar-num">02</div>
           <div class="pillar-body">
             <h3>Family Pods <em>household layer</em></h3>
-            <p>Families are multi-person systems with competing schedules and kid-specific constraints. Skedaddle coordinates internal family experiences and cross-matches families based on children's ages, parenting values, and activity preferences. Highest LTV segment in the platform.</p>
+            <p>Families are multi-person systems with competing schedules. Skedaddle coordinates internal family experiences and cross-matches families based on children's ages, parenting values, and activity preferences.</p>
             <span class="pillar-tag">Highest retention tier</span>
           </div>
         </div>
@@ -1288,7 +512,7 @@
           <div class="pillar-num">03</div>
           <div class="pillar-body">
             <h3>Community OS <em>institution layer</em></h3>
-            <p>Churches, schools, and homeschool co-ops get a full belonging infrastructure. New members get household intake, interest capture, and automated matching to small groups, ministry roles, and activities. Admins track newcomer integration scores in real time.</p>
+            <p>Churches, schools, and homeschool co-ops get a full belonging infrastructure. New members get automated matching to small groups, ministry roles, and activities. Admins track integration scores in real time.</p>
             <span class="pillar-tag">SaaS revenue engine</span>
           </div>
         </div>
@@ -1296,47 +520,8 @@
           <div class="pillar-num">04</div>
           <div class="pillar-body">
             <h3>Connection Graph™ <em>intelligence layer</em></h3>
-            <p>A behavioral property graph capturing every real-world experience outcome — who attended, satisfaction scores, repeat contact, trust signals, and retention effects. It learns what creates belonging and makes every future coordination smarter. This is the defensible moat.</p>
+            <p>A behavioral property graph capturing every real-world experience outcome — attendance, satisfaction, repeat contact, trust signals. It learns what creates belonging and makes every future coordination smarter.</p>
             <span class="pillar-tag">The data advantage</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONNECTION GRAPH -->
-  <section class="graph-section" id="graph">
-    <div class="graph-inner">
-      <div class="graph-card">
-        <div>
-          <div class="graph-label">Connection Graph™</div>
-          <h2>The system learns<br>what creates<br>belonging.</h2>
-          <p>Every attended experience, satisfaction signal, and retained relationship feeds a proprietary graph that makes Skedaddle smarter and harder to copy over time. The data advantage compounds with every user on the platform.</p>
-          <div class="graph-insight">
-            <p>"Families matched via outdoor activities show 3× retention vs. dining-only events." — the graph learns this and shifts future coordination accordingly.</p>
-          </div>
-        </div>
-        <div>
-          <div class="graph-nodes">
-            <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(250,246,238,0.35);margin-bottom:0.5rem;">Graph nodes &amp; edges</p>
-            <div class="graph-node-row">
-              <span class="graph-node">individuals</span>
-              <span class="graph-node">households</span>
-              <span class="graph-node">organizations</span>
-            </div>
-            <div class="graph-node-row">
-              <span class="graph-node">locations</span>
-              <span class="graph-node">experiences</span>
-              <span class="graph-node">outcomes</span>
-            </div>
-            <div class="graph-node-row">
-              <span class="graph-node">trust signals</span>
-              <span class="graph-node">satisfaction scores</span>
-            </div>
-            <div class="graph-node-row">
-              <span class="graph-node">retention effects</span>
-              <span class="graph-node">repeat contact</span>
-            </div>
           </div>
         </div>
       </div>
@@ -1346,15 +531,15 @@
   <!-- TRIBE CARD SECTION -->
   <section class="tribe-section">
     <div class="tribe-inner">
-      <div class="tribe-card-mockup">
+      <div class="tribe-card">
         <div class="tribe-card-top">
           <div>
             <div class="tribe-proposal-label">New Proposal</div>
             <div class="tribe-card-title">Dawn<br>Runners<br>Tribe</div>
           </div>
           <div class="tribe-match-badge">
-            <span class="match-pct">91%</span>
-            <span class="match-lbl">Match</span>
+            <span class="pct">91%</span>
+            <span class="lbl">Match</span>
           </div>
         </div>
         <div class="tribe-ai-quote">
@@ -1363,31 +548,68 @@
         </div>
         <div class="tribe-members-label">Proposed Members</div>
         <div class="tribe-avatars">
-          <div class="tribe-avatar" style="background:#e8d5c0;font-size:1.3rem">👩</div>
-          <div class="tribe-avatar" style="background:#d0c8e8;font-size:1.3rem">👨</div>
-          <div class="tribe-avatar" style="background:#c8dce8;font-size:1.3rem">🧑</div>
-          <div class="tribe-avatar" style="background:#d8e0cc;font-size:1.3rem">👨</div>
+          <div class="tribe-avatar" style="background:#b45309">M</div>
+          <div class="tribe-avatar" style="background:#0C7A50">P</div>
+          <div class="tribe-avatar" style="background:#4A3DB5">J</div>
+          <div class="tribe-avatar" style="background:#B03020">S</div>
           <div class="tribe-avatar-more">+1</div>
         </div>
         <div class="tribe-tags">
-          <span class="tribe-tag">🌅 Early Riser</span>
-          <span class="tribe-tag">🏃 Trail Running</span>
-          <span class="tribe-tag">🥑 Avocado Toast</span>
+          <span class="sk-tag amber">🌅 Early Riser</span>
+          <span class="sk-tag green">🏃 Trail Running</span>
+          <span class="sk-tag violet">🥑 Avocado Toast</span>
         </div>
-        <button class="tribe-cta-btn">Join This Tribe</button>
+        <button class="tribe-cta">Join This Tribe</button>
         <div class="tribe-see-another">See Another Option</div>
       </div>
       <div class="tribe-text">
-        <div class="section-label">Tribes in action</div>
+        <div class="sk-label" style="margin-bottom:8px">Tribes in action</div>
         <h2>Your perfect crew,<br><em>proposed by AI.</em></h2>
-        <p>Skedaddle's Assimilation Engine analyzes your profile, schedule, and interests to propose a Tribe — a small cohort of 5–7 compatible people nearby. You see the match score, the AI's reasoning, and the proposed members before you commit.</p>
+        <p>Skedaddle's Assimilation Engine analyzes your profile, schedule, and interests to propose a Tribe — a small cohort of 5–7 compatible people nearby. You see the match score, the AI's reasoning, and proposed members before you commit.</p>
         <p>No awkward introductions. No cold group chats. Just a ready-made crew and a first experience already planned.</p>
-        <ul class="tribe-feature-list">
-          <li><span class="icon">✦</span> AI-written match explanation for every Tribe proposal</li>
-          <li><span class="icon">✦</span> Compatibility score based on 5 behavioral dimensions</li>
-          <li><span class="icon">✦</span> Don't like it? Request a new Tribe instantly</li>
-          <li><span class="icon">✦</span> First experience proposed and coordinated automatically</li>
+        <ul class="tribe-features">
+          <li><span class="feat-icon">✦</span> AI-written match explanation for every Tribe proposal</li>
+          <li><span class="feat-icon">✦</span> Compatibility score based on 5 behavioral dimensions</li>
+          <li><span class="feat-icon">✦</span> Don't like it? Request a new Tribe instantly</li>
+          <li><span class="feat-icon">✦</span> First experience proposed and coordinated automatically</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRAPH -->
+  <section class="graph-section" id="graph">
+    <div class="graph-inner">
+      <div class="graph-card">
+        <div>
+          <div class="graph-label">Connection Graph™</div>
+          <h2>The system learns<br>what creates<br>belonging.</h2>
+          <p>Every attended experience, satisfaction signal, and retained relationship feeds a proprietary graph that makes Skedaddle smarter and harder to copy over time. The data advantage compounds with every user.</p>
+          <div class="graph-insight">
+            <p>"Families matched via outdoor activities show 3× retention vs. dining-only events." — the graph learns this and shifts future coordination accordingly.</p>
+          </div>
+        </div>
+        <div class="graph-nodes">
+          <p class="graph-nodes-label">Graph nodes &amp; edges</p>
+          <div class="graph-node-row">
+            <span class="graph-node">individuals</span>
+            <span class="graph-node">households</span>
+            <span class="graph-node">organizations</span>
+          </div>
+          <div class="graph-node-row">
+            <span class="graph-node">locations</span>
+            <span class="graph-node">experiences</span>
+            <span class="graph-node">outcomes</span>
+          </div>
+          <div class="graph-node-row">
+            <span class="graph-node">trust signals</span>
+            <span class="graph-node">satisfaction scores</span>
+          </div>
+          <div class="graph-node-row">
+            <span class="graph-node">retention effects</span>
+            <span class="graph-node">repeat contact</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1396,81 +618,94 @@
   <section class="how" id="how">
     <div class="how-inner">
       <div>
-        <div class="section-label">Experience flow</div>
-        <h2 class="section-title">From sign-up<br>to real friendship.</h2>
-        <p style="font-size:0.88rem;font-weight:300;color:var(--muted);line-height:1.7;">The coordination engine handles everything from intake to outcome. You just show up.</p>
+        <div class="section-header">
+          <div class="sk-label">Experience flow</div>
+          <h2>From sign-up<br>to real friendship.</h2>
+        </div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7">The coordination engine handles everything from intake to outcome. You just show up.</p>
       </div>
       <div class="steps">
         <div class="step">
           <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h4>Profile &amp; intake</h4>
-            <p>Life stage, interests, schedule, social comfort level, and personality style — captured once, refined continuously through behavior.</p>
-          </div>
+          <div class="step-content"><h4>Profile &amp; intake</h4><p>Life stage, interests, schedule, social comfort level, and personality style — captured once, refined continuously through behavior.</p></div>
         </div>
         <div class="step">
           <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h4>Tribe assignment</h4>
-            <p>The Assimilation Engine matches you to 5–7 compatible people nearby with overlapping availability and shared core interests.</p>
-          </div>
+          <div class="step-content"><h4>Tribe assignment</h4><p>The Assimilation Engine matches you to 5–7 compatible people nearby with overlapping availability and shared core interests.</p></div>
         </div>
         <div class="step">
           <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h4>AI proposes the experience</h4>
-            <p>Weather check, venue selection, travel time fairness, RSVP flow — all handled automatically. You get a ready-to-confirm invite.</p>
-          </div>
+          <div class="step-content"><h4>AI proposes the experience</h4><p>Weather check, venue selection, travel time fairness, RSVP flow — all handled automatically. You get a ready-to-confirm invite.</p></div>
         </div>
         <div class="step">
           <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
-          <div class="step-content">
-            <h4>Show up and connect</h4>
-            <p>Post-experience feedback — attendance, satisfaction, re-engagement intent — feeds back into the Connection Graph, improving every future match.</p>
-          </div>
+          <div class="step-content"><h4>Show up and connect</h4><p>Post-experience feedback feeds back into the Connection Graph, improving every future match for you and your tribe.</p></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- WHO IT'S FOR -->
-  <section class="tiers" id="tiers" style="padding-top: 5rem; padding-bottom: 5rem;">
+  <!-- TIERS -->
+  <section class="tiers">
     <div class="tiers-inner">
-      <div class="section-label">Who Skedaddle serves</div>
-      <h2 class="section-title">Built for every<br>stage of life.</h2>
+      <div class="section-header">
+        <div class="sk-label">Who Skedaddle serves</div>
+        <h2>Built for every<br>stage of life.</h2>
+      </div>
       <div class="tiers-grid">
         <div class="tier-card">
           <div class="tier-icon">🧭</div>
           <h3>New to the city</h3>
-          <div class="tier-sub">Individual · Tribes</div>
+          <span class="tier-sub">Individual · Tribes</span>
           <p>Skip months of awkward coffee chats. Skedaddle places you in a matched Tribe within days and gets your calendar filled with real experiences alongside compatible people.</p>
         </div>
         <div class="tier-card">
           <div class="tier-icon">🏡</div>
           <h3>Families &amp; parents</h3>
-          <div class="tier-sub">Household · Family Pods</div>
+          <span class="tier-sub">Household · Family Pods</span>
           <p>Coordinate your own household and find like-minded families for your kids. Values alignment, kids' age bands, and shared activity preferences — all matched automatically.</p>
         </div>
         <div class="tier-card">
           <div class="tier-icon">🏛️</div>
           <h3>Churches &amp; schools</h3>
-          <div class="tier-sub">Institution · Community OS</div>
+          <span class="tier-sub">Institution · Community OS</span>
           <p>Turn a passive welcome email into a full belonging infrastructure. Know exactly how well each newcomer is integrating — and automate the coordination that makes them stay.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- APP DOWNLOAD TEASER -->
+  <section class="app-section">
+    <div class="app-inner">
+      <div class="app-text">
+        <div class="sk-label" style="margin-bottom:8px">Available on mobile</div>
+        <h3>Skedaddle iOS app<br><em>coming soon.</em></h3>
+        <p>Built natively in Swift for iPhone. The full Connection Graph, Tribe matching, and experience coordination — in your pocket.</p>
+      </div>
+      <div class="app-badges">
+        <a href="#waitlist" class="app-badge">
+          <span class="app-badge-icon">🍎</span>
+          <div><div style="font-size:9px;opacity:.6;letter-spacing:.05em">COMING SOON TO</div><div>App Store</div></div>
+        </a>
+        <a href="#waitlist" class="app-badge">
+          <span class="app-badge-icon">🤖</span>
+          <div><div style="font-size:9px;opacity:.6;letter-spacing:.05em">COMING SOON TO</div><div>Google Play</div></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / WAITLIST -->
   <section class="cta" id="waitlist">
     <div class="cta-inner">
       <h2>Ready to <em>skip</em><br>the awkward phase?</h2>
       <p>Join the Skedaddle waitlist and be among the first to experience social coordination that actually works. Launching in select cities soon.</p>
-      <form class="email-form" onsubmit="handleSubmit(event)">
-        <input type="email" id="emailInput" placeholder="your@email.com" required />
+      <form class="email-form" onsubmit="handleMainSubmit(event)">
+        <input type="email" id="mainEmail" placeholder="your@email.com" required/>
         <button type="submit">Join waitlist</button>
       </form>
-      <p class="cta-note" id="formMsg">No spam. Unsubscribe anytime. Early access users help shape the product.</p>
+      <p class="cta-note" id="mainMsg">No spam. Unsubscribe anytime. Early access users help shape the product.</p>
     </div>
   </section>
 
@@ -1478,7 +713,10 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
-        <a href="#" class="logo-img-link"><img src="logo.jpg" alt="Skedaddle" class="footer-logo-img" /></a>
+        <a href="#" class="nav-logo">
+          <div class="nav-logo-badge">S</div>
+          <div class="nav-logo-text">Sked<span>addle</span></div>
+        </a>
         <p>An AI-orchestrated social coordination platform. We're not building social features. We're building the engine that turns aligned people into repeated real-world experiences.</p>
       </div>
       <div class="footer-col">
@@ -1505,66 +743,83 @@
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Service</a></li>
           <li><a href="#">Cookie Policy</a></li>
+          <li><a href="admin.html" style="color:rgba(255,255,255,.25);font-size:11px">Admin ↗</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2025 Skedaddle Enterprises, Inc. All rights reserved.</span>
-      <span> —Confidential &amp; Proprietary</span>
+      <span>© 2026 Skedaddle Enterprises, Inc. All rights reserved.</span>
+      <span>Gainsville, FL — Confidential &amp; Proprietary</span>
     </div>
   </footer>
 
   <script>
-    // Launch popup — show after 1.2s
+    // ── Popup ──────────────────────────────────────────────────────────────
     setTimeout(() => {
       document.getElementById('launchPopup').classList.add('visible');
-    }, 1200);
+    }, 1500);
 
     function closePopup() {
-      const overlay = document.getElementById('launchPopup');
-      overlay.classList.remove('visible');
+      const el = document.getElementById('launchPopup');
+      el.style.transition = 'opacity .3s, visibility .3s';
+      el.classList.remove('visible');
     }
 
-    function handlePopupSubmit() {
-      const email = document.getElementById('popupEmail').value;
-      if (!email || !email.includes('@')) {
-        document.getElementById('popupEmail').style.borderColor = 'var(--sienna)';
-        return;
-      }
-      const box = document.querySelector('.popup-box');
-      box.innerHTML = `
-        <div style="text-align:center;padding:1rem 0">
-          <div style="font-size:2.5rem;margin-bottom:1rem">✅</div>
-          <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;color:var(--green-deep);margin-bottom:0.6rem">You're on the list!</h2>
-          <p style="font-size:0.88rem;font-weight:300;color:var(--muted);line-height:1.65">We'll reach out as soon as Skedaddle launches in your city. Something great is coming.</p>
-          <button onclick="closePopup()" style="margin-top:1.5rem;background:var(--green-deep);color:var(--cream);font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:500;padding:0.75rem 2rem;border-radius:2rem;border:none;cursor:pointer;">Close</button>
-        </div>
-      `;
-      console.log('Popup waitlist signup:', email);
-    }
-
-    // Close popup on overlay click
     document.getElementById('launchPopup').addEventListener('click', function(e) {
       if (e.target === this) closePopup();
     });
 
+    async function handlePopupSubmit() {
+      const email = document.getElementById('popupEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('popupEmail').style.borderColor = '#B03020';
+        return;
+      }
+      const btn = document.querySelector('.popup-form button');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+
+      await saveToWaitlist(email, 'popup');
+
+      document.querySelector('.popup-box').innerHTML = `
+        <div style="text-align:center;padding:16px 0">
+          <div style="font-size:2.5rem;margin-bottom:14px">✅</div>
+          <h2 style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#1e1b4b;margin-bottom:8px">You're on the list!</h2>
+          <p style="font-size:13px;color:rgba(60,60,67,.52);line-height:1.65">We'll reach out as soon as Skedaddle launches in your city.</p>
+          <button onclick="closePopup()" style="margin-top:18px;background:#9C6500;color:#fff;font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:999px;border:none;cursor:pointer">Close</button>
+        </div>`;
+    }
+
+    // ── Main CTA form ──────────────────────────────────────────────────────
+    async function handleMainSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('mainEmail').value.trim();
+      const msg   = document.getElementById('mainMsg');
+      const btn   = document.querySelector('.email-form button');
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+
+      const ok = await saveToWaitlist(email, 'landing_page_cta');
+      document.getElementById('mainEmail').value = '';
+
+      if (ok) {
+        msg.textContent = '✓ You\'re on the list! We\'ll be in touch soon.';
+        msg.style.color = '#0C7A50';
+        msg.style.fontWeight = '600';
+      } else {
+        msg.textContent = 'Something went wrong. Please try again.';
+        msg.style.color = '#B03020';
+      }
+      btn.textContent = 'Join waitlist';
+      btn.disabled = false;
+    }
+
+    // ── Mobile menu ────────────────────────────────────────────────────────
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
     }
 
-    function handleSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById('emailInput').value;
-      const msg = document.getElementById('formMsg');
-      msg.textContent = '✓ You\'re on the list! We\'ll be in touch soon.';
-      msg.style.color = '#2d5a3f';
-      msg.style.fontWeight = '500';
-      document.getElementById('emailInput').value = '';
-      // TODO: wire to Firebase or your backend
-      console.log('Waitlist signup:', email);
-    }
-
-    // Smooth scroll for anchor links
+    // ── Smooth scroll ──────────────────────────────────────────────────────
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', e => {
         const id = link.getAttribute('href');
@@ -1575,6 +830,5 @@
       });
     });
   </script>
-
 </body>
 </html>
