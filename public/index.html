@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skedaddle — Real People. Real Places. Zero Friction.</title>
+  <title>Skedaddle — Real people.Real places.Real belonging.</title>
   <meta name="description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -248,7 +248,8 @@
     .app-badges{display:flex;gap:10px;flex-wrap:wrap}
     .app-badge{display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;text-decoration:none;transition:background .2s}
     .app-badge:hover{background:var(--violet)}
-    .app-badge-icon{font-size:18px}
+    .app-badge-icon{font-size:18px;display:inline-flex;align-items:center;justify-content:center}
+    .app-badge-icon svg{display:block}
 
     /* ── CTA ──────────────────────────────────────────────────── */
     .cta{padding:80px 20px;text-align:center}
@@ -282,6 +283,199 @@
     .section-header{margin-bottom:40px}
     .section-header .sk-label{margin-bottom:8px}
     .section-header h2{font-family:Georgia,serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.12}
+
+    /* ── 3D APP SHOWCASE ──────────────────────────────────────── */
+    .app3d{padding:84px 20px 92px;background:radial-gradient(120% 90% at 50% -10%,#2a2566 0%,var(--navy) 48%,#16133a 100%);position:relative;overflow:hidden;border-top:1px solid var(--border)}
+    .app3d::before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:680px;height:680px;border-radius:50%;background:radial-gradient(circle,rgba(156,101,0,.16) 0%,transparent 62%);pointer-events:none}
+    .app3d::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:42px 42px;mask:radial-gradient(120% 80% at 50% 30%,#000 0%,transparent 75%);-webkit-mask:radial-gradient(120% 80% at 50% 30%,#000 0%,transparent 75%);pointer-events:none}
+    .app3d-inner{max-width:1160px;margin:0 auto;position:relative;z-index:2}
+    .app3d-head{text-align:center;max-width:580px;margin:0 auto 8px}
+    .app3d-head .sk-label{color:rgba(156,101,0,.95);margin-bottom:10px}
+    .app3d-head h2{font-family:Georgia,serif;font-size:clamp(1.9rem,3.2vw,2.8rem);font-weight:700;color:#fff;line-height:1.14;margin-bottom:14px}
+    .app3d-head h2 em{font-style:italic;color:#f0c080}
+    .app3d-head p{font-size:14px;font-weight:400;color:rgba(255,255,255,.6);line-height:1.7}
+
+    /* Stage */
+    .stage{position:relative;height:660px;perspective:1800px;perspective-origin:50% 42%;margin-top:8px}
+    .stage-scene{position:absolute;inset:0;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center;transition:transform .25s ease-out}
+
+    /* Connection Graph — concentric signal rings behind the phone */
+    .cg-rings{position:absolute;left:50%;top:46%;width:0;height:0;z-index:1;pointer-events:none}
+    /* static structure ring — always present, very faint */
+    .cg-rings::before{content:'';position:absolute;left:50%;top:50%;width:430px;height:430px;margin:-215px 0 0 -215px;border-radius:50%;border:1px solid rgba(255,255,255,.06);box-shadow:0 0 60px rgba(240,192,128,.04) inset}
+    .cg-ring{position:absolute;left:50%;top:50%;width:430px;height:430px;margin:-215px 0 0 -215px;border-radius:50%;border:1px solid rgba(240,192,128,.22);opacity:0;transform:scale(.34);animation:cgPulse 7.2s cubic-bezier(.16,.7,.3,1) infinite}
+    .cg-ring:nth-child(2){animation-delay:1.8s}
+    .cg-ring:nth-child(3){animation-delay:3.6s}
+    .cg-ring:nth-child(4){animation-delay:5.4s}
+    @keyframes cgPulse{0%{opacity:0;transform:scale(.34)}14%{opacity:.5}70%{opacity:.1}100%{opacity:0;transform:scale(1.52)}}
+    .cg-ring-label{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);z-index:4;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);display:flex;align-items:center;gap:7px;pointer-events:none}
+    .cg-ring-label::before,.cg-ring-label::after{content:'';width:22px;height:1px;background:rgba(240,192,128,.4)}
+
+    /* Phone frame */
+    .phone{position:relative;width:288px;height:600px;border-radius:46px;background:linear-gradient(155deg,#2c2850,#0e0c26);padding:11px;box-shadow:0 2px 0 rgba(255,255,255,.12) inset,0 50px 90px -30px rgba(0,0,0,.65),0 0 0 1.5px rgba(255,255,255,.06);transform-style:preserve-3d}
+    .phone-screen{position:relative;width:100%;height:100%;border-radius:36px;overflow:hidden;background:var(--bg);box-shadow:0 0 0 2px #000}
+    .phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:118px;height:26px;background:#0e0c26;border-radius:0 0 16px 16px;z-index:30}
+    .phone-glare{position:absolute;inset:0;border-radius:36px;background:linear-gradient(135deg,rgba(255,255,255,.14) 0%,transparent 28%,transparent 72%,rgba(255,255,255,.05) 100%);pointer-events:none;z-index:25}
+
+    /* Main phone position + float */
+    .phone-main{z-index:10;transform:translateZ(60px) rotateY(-16deg) rotateX(5deg);animation:floatMain 7s ease-in-out infinite}
+    .phone-main .phone-screen{cursor:grab;touch-action:pan-y;user-select:none}
+    .phone-main .phone-screen:active{cursor:grabbing}
+    @keyframes floatMain{0%,100%{transform:translateZ(60px) rotateY(-16deg) rotateX(5deg) translateY(0)}50%{transform:translateZ(60px) rotateY(-16deg) rotateX(5deg) translateY(-16px)}}
+
+    /* Side phones */
+    .phone-side{position:absolute;width:248px;height:516px;border-radius:40px;opacity:.92}
+    .phone-side .phone-screen{border-radius:31px}
+    .phone-side .phone-notch{width:100px;height:22px}
+    .phone-left{left:calc(50% - 430px);transform:translateZ(-90px) rotateY(34deg) rotateX(4deg) translateY(28px);animation:floatL 8s ease-in-out infinite}
+    .phone-right{left:calc(50% + 182px);transform:translateZ(-90px) rotateY(-34deg) rotateX(4deg) translateY(28px);animation:floatR 8.5s ease-in-out infinite}
+    @keyframes floatL{0%,100%{transform:translateZ(-90px) rotateY(34deg) rotateX(4deg) translateY(28px)}50%{transform:translateZ(-90px) rotateY(34deg) rotateX(4deg) translateY(10px)}}
+    @keyframes floatR{0%,100%{transform:translateZ(-90px) rotateY(-34deg) rotateX(4deg) translateY(28px)}50%{transform:translateZ(-90px) rotateY(-34deg) rotateX(4deg) translateY(46px)}}
+
+    /* Floating feature chips */
+    .float-chip{position:absolute;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:14px;padding:11px 15px;box-shadow:0 20px 40px -16px rgba(0,0,0,.5);z-index:20}
+    .float-chip .fc-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .float-chip .fc-t{font-size:11px;font-weight:700;color:#fff;line-height:1.25}
+    .float-chip .fc-t span{display:block;font-size:9px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.04em}
+    .fc-1{top:48px;left:calc(50% - 268px);transform:translateZ(120px);animation:floatChip 6s ease-in-out infinite}
+    .fc-2{top:150px;left:calc(50% + 168px);transform:translateZ(150px);animation:floatChip 7s ease-in-out .6s infinite}
+    .fc-3{bottom:96px;left:calc(50% - 296px);transform:translateZ(140px);animation:floatChip 6.6s ease-in-out 1.1s infinite}
+    .fc-4{bottom:150px;left:calc(50% + 196px);transform:translateZ(110px);animation:floatChip 7.4s ease-in-out .3s infinite}
+    @keyframes floatChip{0%,100%{translate:0 0}50%{translate:0 -14px}}
+
+    /* Screen switcher dots */
+    .stage-dots{display:flex;gap:9px;justify-content:center;margin-top:6px;position:relative;z-index:3}
+    .stage-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);border:none;cursor:pointer;padding:0;transition:background .25s,width .25s}
+    .stage-dot.active{background:var(--amber);width:24px;border-radius:999px}
+    .stage-caption{text-align:center;color:rgba(255,255,255,.55);font-size:12px;font-weight:600;letter-spacing:.04em;margin-top:14px;position:relative;z-index:3;min-height:16px;transition:opacity .25s}
+    .stage-hint{text-align:center;color:rgba(255,255,255,.32);font-size:11px;font-weight:600;letter-spacing:.05em;margin-top:6px;position:relative;z-index:3;animation:hintPulse 2.6s ease-in-out infinite}
+    @keyframes hintPulse{0%,100%{opacity:.5}50%{opacity:.95}}
+
+    /* ── APP SCREEN UI (inside phones) ────────────────────────── */
+    .scr{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);opacity:0;visibility:hidden;transition:opacity .55s ease,transform .55s ease;transform:translateY(8px) scale(.99)}
+    .scr.on{opacity:1;visibility:visible;transform:none}
+    .scr-status{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 6px;font-size:12px;font-weight:700;color:var(--navy)}
+    .scr-status .sig{letter-spacing:1px}
+    .scr-nav{display:flex;align-items:center;gap:9px;padding:8px 18px 14px}
+    .scr-back{width:30px;height:30px;border-radius:50%;background:var(--surf);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--navy);flex-shrink:0}
+    .scr-prog{display:flex;gap:4px;align-items:center}
+    .scr-prog i{width:6px;height:6px;border-radius:50%;background:var(--border2);display:block;transition:background .3s}
+    .scr-prog i.on{background:var(--amber)}
+    .scr-skip{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600}
+    .scr-body{flex:1;overflow:hidden;padding:2px 18px 18px;display:flex;flex-direction:column}
+    .scr-title{font-family:Georgia,serif;font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1.12;margin-bottom:7px}
+    .scr-title em{font-style:italic;color:var(--amber)}
+    .scr-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+
+    /* App brand mark (welcome) */
+    .scr-brand{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6px}
+    .scr-brand .logo{width:64px;height:64px;border-radius:18px;background:var(--navy);color:#fff;font-family:Georgia,serif;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+    .scr-brand .wm{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--navy);margin-bottom:22px}
+    .scr-brand .wm span{color:var(--amber)}
+    .scr-brand h3{font-family:Georgia,serif;font-size:2rem;font-weight:700;color:var(--navy);line-height:1.08;margin-bottom:14px}
+    .scr-brand h3 em{font-style:italic;color:var(--amber)}
+    .scr-brand p{font-size:13px;color:var(--muted);line-height:1.6;max-width:230px;margin-bottom:4px}
+    .scr-login{font-size:12px;color:var(--muted);margin-top:14px}
+    .scr-login b{color:var(--navy);text-decoration:underline;text-underline-offset:2px;font-weight:700}
+
+    /* Option cards */
+    .opt{display:flex;align-items:center;gap:12px;background:var(--surf);border:1.5px solid var(--border);border-radius:16px;padding:13px 14px;margin-bottom:10px}
+    .opt.sel{background:var(--amber-bg);border-color:var(--amber)}
+    .opt .oi{width:38px;height:38px;border-radius:11px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--border)}
+    .opt .ot{flex:1;min-width:0}
+    .opt .ot b{display:block;font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--navy);line-height:1.15}
+    .opt .ot span{font-size:11px;color:var(--muted);line-height:1.35;display:block;margin-top:1px}
+    .opt .orad{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+    .opt.sel .orad{background:var(--amber);border-color:var(--amber);color:#fff;font-size:11px;font-weight:800}
+    .opt-rec{position:relative}
+    .opt-rec .rec-tag{position:absolute;top:-9px;right:14px;background:var(--amber);color:#fff;font-size:8px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:999px}
+    .opt .dotsx{display:flex;flex-shrink:0}
+    .opt .dotsx i{width:13px;height:13px;border-radius:50%;border:2px solid var(--surf);margin-right:-5px;display:block}
+
+    /* Interest / life chips */
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{font-size:12px;font-weight:600;padding:9px 13px;border-radius:999px;background:var(--surf);border:1px solid var(--border);color:var(--text);white-space:nowrap}
+    .chip.sa{background:var(--amber-bg);border-color:var(--amber-bd);color:var(--amber)}
+    .chip.sn{background:var(--navy);border-color:var(--navy);color:#fff}
+    .chip.sg{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+    .chip.sv{background:var(--violet-bg);border-color:var(--violet-bd);color:var(--violet)}
+    .chip.more{width:34px;text-align:center;color:var(--muted);padding:9px 0}
+
+    /* Week availability grid */
+    .week{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:16px 14px}
+    .week-grid{display:grid;grid-template-columns:64px 1fr 1fr 1fr;gap:8px;align-items:center}
+    .week-grid .hl{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);text-align:center}
+    .week-grid .rl{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--navy)}
+    .week-cell{height:34px;border-radius:9px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:transparent}
+    .week-cell.on{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+    .week-note{font-family:Georgia,serif;font-style:italic;font-size:11px;color:var(--muted);margin-top:13px}
+
+    /* Location + radius */
+    .loc{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:11px}
+    .loc .pin{font-size:18px}
+    .loc .lt{flex:1;font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--navy);line-height:1.1}
+    .loc .conf{font-size:11px;color:var(--muted);font-weight:600}
+    .radius{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:15px 14px}
+    .radius-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+    .radius-top .rk{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+    .radius-top .rv{font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--navy)}
+    .radius-track{height:5px;border-radius:999px;background:var(--bg);position:relative;margin-bottom:8px}
+    .radius-track .fill{position:absolute;left:0;top:0;bottom:0;width:42%;border-radius:999px;background:var(--amber)}
+    .radius-track .knob{position:absolute;left:42%;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--navy);border:2px solid var(--surf);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+    .radius-scale{display:flex;justify-content:space-between;font-size:9px;font-weight:600;color:var(--muted)}
+
+    /* Trust / verification rows */
+    .trust{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:13px 14px;margin-bottom:10px}
+    .trust .ti{width:36px;height:36px;border-radius:10px;background:var(--green-bg);border:1px solid var(--green-bd);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .trust .tt{flex:1;min-width:0}
+    .trust .tt b{display:block;font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--navy)}
+    .trust .tt span{font-size:11px;color:var(--muted);line-height:1.35}
+    .trust .st{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:999px;flex-shrink:0}
+    .trust .st.pend{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+    .trust .st.done{background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd)}
+
+    /* Tribe payoff card */
+    .scr.payoff{background:linear-gradient(180deg,var(--amber-bg) 0%,var(--bg) 38%)}
+    .pay-head{text-align:center;padding:6px 18px 14px}
+    .pay-head .kicker{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+    .pay-head h3{font-family:Georgia,serif;font-size:1.7rem;font-weight:700;color:var(--navy);line-height:1.05}
+    .pay-head h3 em{font-style:italic;color:var(--amber)}
+    .pay-head p{font-size:12px;color:var(--muted);margin-top:6px}
+    .m-card{background:var(--surf);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(30,27,75,.1);margin:0 16px}
+    .m-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+    .m-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--navy);line-height:1.04}
+    .m-badge{background:var(--amber);border-radius:11px;padding:7px 10px;text-align:center;flex-shrink:0}
+    .m-badge .p{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--navy);line-height:1;display:block}
+    .m-badge .l{font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(30,27,75,.7)}
+    .m-quote{background:var(--violet-bg);border:1px solid var(--violet-bd);border-radius:11px;padding:11px 12px;margin-bottom:13px}
+    .m-quote p{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--navy);line-height:1.5}
+    .m-mlbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+    .m-avs{display:flex;margin-bottom:13px}
+    .m-avs .a{width:30px;height:30px;border-radius:50%;border:2px solid var(--surf);margin-right:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+    .m-avs .more{background:var(--navy);font-size:9px}
+    .m-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+    .m-see{text-align:center;font-size:12px;font-weight:700;color:var(--navy);text-decoration:underline;text-underline-offset:2px;margin-top:10px}
+
+    /* Bottom primary button */
+    .scr-foot{margin-top:auto;padding-top:12px}
+    .scr-btn{width:100%;background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;padding:14px;border-radius:14px;border:none;text-align:center;display:block}
+    .scr-btn.amber{background:var(--amber)}
+
+    @media(max-width:980px){
+      .phone-side,.fc-1,.fc-2,.fc-3,.fc-4,.cg-rings,.cg-ring-label{display:none}
+      .stage{height:600px;perspective:1400px}
+      .phone-main{transform:rotateY(-10deg) rotateX(4deg)}
+      @keyframes floatMain{0%,100%{transform:rotateY(-10deg) rotateX(4deg) translateY(0)}50%{transform:rotateY(-10deg) rotateX(4deg) translateY(-14px)}}
+    }
+    @media(max-width:600px){
+      .app3d{padding:60px 16px 70px}
+      .phone-main{transform:none;animation:floatMainS 7s ease-in-out infinite}
+      @keyframes floatMainS{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+      .stage{height:560px;perspective:none}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .phone-main,.phone-left,.phone-right,.float-chip,.cg-ring{animation:none!important}
+    }
 
     /* ── ANIMATIONS ───────────────────────────────────────────── */
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -392,6 +586,7 @@
         <div class="nav-logo-text">Sked<span>addle</span></div>
       </a>
       <ul class="nav-links">
+        <li><a href="#app">The app</a></li>
         <li><a href="#how">How it works</a></li>
         <li><a href="#tiers">Who it's for</a></li>
         <li><a href="#graph">The tech</a></li>
@@ -402,6 +597,7 @@
       </button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
+      <a href="#app">The app</a>
       <a href="#how">How it works</a>
       <a href="#tiers">Who it's for</a>
       <a href="#graph">The tech</a>
@@ -414,9 +610,9 @@
     <div class="hero">
       <div class="hero-inner">
         <div>
-          <div class="hero-label"><span>A new kind of social</span></div>
-          <h1>Real people.<br><em>Real places.</em><br>Zero friction.</h1>
-          <p class="hero-sub">Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months. No browsing. No awkward cold messages. Just curated connection.</p>
+          <div class="hero-label"><span>An operating system for belonging</span></div>
+          <h1>Real people.<br><em>Real places.</em><br>Real <em>belonging.</em></h1>
+          <p class="hero-sub">Skedaddle takes the guesswork out of community. Bring the friends, family, and tribe you already have — or get matched with new people who genuinely fit your life. Real places, real moments, all already planned.</p>
           <div class="hero-btns">
             <a href="#waitlist" class="btn-primary">Join the waitlist</a>
             <a href="#how" class="btn-secondary">See how it works</a>
@@ -441,8 +637,232 @@
     <div class="hero-img-overlay">
       <div class="hero-img-caption">
         <div class="cap-label">What Skedaddle creates</div>
-        <h2>Strangers today.<br><em>Real friends</em> by next weekend.</h2>
-        <p>AI-matched groups. Real places. Zero logistics. This is what belonging looks like at scale.</p>
+        <h2>Belonging,<br><em>by design.</em></h2>
+        <p>Matched groups, real places, and the kind of community that doesn't happen by accident. The hardest parts of finding your people — handled, so all that's left is showing up.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3D APP SHOWCASE -->
+  <section class="app3d" id="app">
+    <div class="app3d-inner">
+      <div class="app3d-head">
+        <div class="sk-label">See the actual app</div>
+        <h2>This is how Skedaddle <em>actually works.</em></h2>
+        <p>A few warm questions, then the Assimilation Engine proposes your Tribe. Tap through the real onboarding flow — rendered live, in 3D.</p>
+      </div>
+
+      <div class="stage" id="stage">
+        <!-- floating feature chips -->
+        <div class="float-chip fc-1"><div class="fc-ic" style="background:var(--amber-bg)">✦</div><div class="fc-t">AI match reasoning<span>Every Tribe explained</span></div></div>
+        <div class="float-chip fc-2"><div class="fc-ic" style="background:var(--green-bg)">🏃</div><div class="fc-t">5 behavioral signals<span>Compatibility-first</span></div></div>
+        <div class="float-chip fc-3"><div class="fc-ic" style="background:var(--violet-bg)">📍</div><div class="fc-t">Matched near you<span>Real places, real life</span></div></div>
+        <div class="float-chip fc-4"><div class="fc-ic" style="background:var(--coral-bg)">🛡️</div><div class="fc-t">Everyone verified<span>So the trust holds</span></div></div>
+
+        <div class="stage-scene" id="scene">
+
+          <!-- CONNECTION GRAPH — concentric signal rings behind the phone -->
+          <div class="cg-rings" aria-hidden="true">
+            <div class="cg-ring"></div>
+            <div class="cg-ring"></div>
+            <div class="cg-ring"></div>
+            <div class="cg-ring"></div>
+          </div>
+          <div class="cg-ring-label">Connection Graph™ · live</div>
+
+          <!-- LEFT side phone: Where in life -->
+          <div class="phone phone-side phone-left">
+            <div class="phone-screen">
+              <div class="phone-notch"></div><div class="phone-glare"></div>
+              <div class="scr on">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div><span class="scr-skip">Skip</span></div>
+                <div class="scr-body">
+                  <div class="scr-title">Where <em>in life</em> are you, right now?</div>
+                  <div class="scr-desc">Pick what's true. More than one is fine.</div>
+                  <div class="chips" style="flex-direction:column;align-items:flex-start">
+                    <span class="chip sn">🧳 Just moved here</span>
+                    <span class="chip">🌱 New chapter starting</span>
+                    <span class="chip sa">🔍 Wanting deeper community</span>
+                    <span class="chip">💛 Lost touch with old friends</span>
+                    <span class="chip">🌅 Reentering after a change</span>
+                  </div>
+                  <div class="scr-foot"><div class="scr-btn">Continue</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT side phone: Trust / verification -->
+          <div class="phone phone-side phone-right">
+            <div class="phone-screen">
+              <div class="phone-notch"></div><div class="phone-glare"></div>
+              <div class="scr on">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+                <div class="scr-body">
+                  <div class="scr-title">One last thing — <em>verification.</em></div>
+                  <div class="scr-desc">Skedaddle is real people in real life. We verify everyone, so the trust holds.</div>
+                  <div class="trust"><div class="ti">🪪</div><div class="tt"><b>Verified ID</b><span>Quick photo of your ID. Never shared.</span></div><span class="st pend">Pending</span></div>
+                  <div class="trust"><div class="ti">🤳</div><div class="tt"><b>Photo selfie</b><span>A quick match check, then deleted.</span></div><span class="st pend">Pending</span></div>
+                  <div class="trust"><div class="ti">🤝</div><div class="tt"><b>Community guidelines</b><span>A short read. We hold each other to it.</span></div><span class="st done">Agreed</span></div>
+                  <div class="scr-foot"><div class="scr-btn">Verify and finish</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MAIN phone: cycles through flow -->
+          <div class="phone phone-main">
+            <div class="phone-screen">
+              <div class="phone-notch"></div><div class="phone-glare"></div>
+
+              <!-- 0: Welcome -->
+              <div class="scr on" data-scr="0">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-brand">
+                  <div class="logo">S</div>
+                  <div class="wm">Sked<span>addle</span></div>
+                  <h3>Let's find <em>your people.</em></h3>
+                  <p>A few warm questions. Then we'll show you who you're meant to meet.</p>
+                  <div class="scr-foot" style="width:100%;padding:24px 0 0"><div class="scr-btn">Begin</div></div>
+                  <div class="scr-login">Already have an account? <b>Log in</b></div>
+                </div>
+              </div>
+
+              <!-- 1: Who's joining -->
+              <div class="scr" data-scr="1">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+                <div class="scr-body">
+                  <div class="scr-title">Who's <em>joining</em> today?</div>
+                  <div class="scr-desc">We'll tailor everything from here.</div>
+                  <div class="opt sel"><div class="oi">🧭</div><div class="ot"><b>Just me</b><span>Find a Tribe of compatible people</span></div><div class="orad">✓</div></div>
+                  <div class="opt"><div class="oi">🏡</div><div class="ot"><b>My family</b><span>Coordinate ours + connect with others</span></div><div class="orad"></div></div>
+                  <div class="opt"><div class="oi">🏛️</div><div class="ot"><b>My organization</b><span>Church, school, or community group</span></div><div class="orad"></div></div>
+                  <div class="scr-foot"><div class="scr-btn">Continue</div></div>
+                </div>
+              </div>
+
+              <!-- 2: What lights you up -->
+              <div class="scr" data-scr="2">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></div>
+                <div class="scr-body">
+                  <div class="scr-title">What <em>lights you up?</em></div>
+                  <div class="scr-desc">Pick whatever's true. More is better.</div>
+                  <div class="chips">
+                    <span class="chip sa">🌅 Early mornings</span>
+                    <span class="chip sn">🏃 Trail running</span>
+                    <span class="chip sg">🥑 Slow brunches</span>
+                    <span class="chip">📚 Book talk</span>
+                    <span class="chip sa">🎶 Live music</span>
+                    <span class="chip">🍷 Long dinners</span>
+                    <span class="chip">🎲 Game nights</span>
+                    <span class="chip sg">🧘 Yoga + quiet</span>
+                    <span class="chip">🎨 Making things</span>
+                    <span class="chip">🥾 Outdoors</span>
+                    <span class="chip">☕ Coffee + walks</span>
+                    <span class="chip more">···</span>
+                  </div>
+                  <div class="scr-foot"><div class="scr-btn">Continue</div></div>
+                </div>
+              </div>
+
+              <!-- 3: Group size -->
+              <div class="scr" data-scr="3">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+                <div class="scr-body">
+                  <div class="scr-title">How big do you <em>like to gather?</em></div>
+                  <div class="scr-desc">We default to small for a reason — it's where friendship actually sticks.</div>
+                  <div class="opt"><div class="ot"><b>Small</b><span>Three to five people</span></div><div class="dotsx"><i style="background:var(--amber)"></i><i style="background:var(--green)"></i></div></div>
+                  <div class="opt sel opt-rec"><span class="rec-tag">Recommended</span><div class="ot"><b>Just right</b><span>Five to seven — Skedaddle's sweet spot</span></div><div class="dotsx"><i style="background:var(--amber)"></i><i style="background:var(--green)"></i><i style="background:var(--navy)"></i><i style="background:var(--violet)"></i></div></div>
+                  <div class="opt"><div class="ot"><b>Larger crew</b><span>Seven to ten people</span></div><div class="dotsx"><i style="background:var(--amber)"></i><i style="background:var(--green)"></i><i style="background:var(--coral)"></i></div></div>
+                  <div class="scr-foot"><div class="scr-btn">Continue</div></div>
+                </div>
+              </div>
+
+              <!-- 4: Your area -->
+              <div class="scr" data-scr="4">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="scr-nav"><div class="scr-back">←</div><div class="scr-prog"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
+                <div class="scr-body">
+                  <div class="scr-title">Where <em>are you</em> based?</div>
+                  <div class="scr-desc">We'll match within your area.</div>
+                  <div class="loc"><span class="pin">📍</span><span class="lt">San Francisco, CA</span><span class="conf">Confirmed</span></div>
+                  <div class="radius">
+                    <div class="radius-top"><span class="rk">Travel radius</span><span class="rv">12 miles</span></div>
+                    <div class="radius-track"><div class="fill"></div><div class="knob"></div></div>
+                    <div class="radius-scale"><span>2 mi</span><span>15 mi</span><span>30 mi</span></div>
+                  </div>
+                  <div class="week-note" style="padding:0 2px">Real-world friendships happen close to home. We weight nearby matches heavier.</div>
+                  <div class="scr-foot"><div class="scr-btn">Continue</div></div>
+                </div>
+              </div>
+
+              <!-- 5: Magic moment / payoff -->
+              <div class="scr payoff" data-scr="5">
+                <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
+                <div class="pay-head">
+                  <div class="kicker">Meet your Tribe</div>
+                  <h3>The <em>Dawn Runners.</em></h3>
+                  <p>Five people. One first Sunday already planned.</p>
+                </div>
+                <div class="m-card">
+                  <div class="m-top">
+                    <div class="m-title">Dawn Runners<br>Tribe</div>
+                    <div class="m-badge"><span class="p">91%</span><span class="l">Match</span></div>
+                  </div>
+                  <div class="m-quote"><p>"You share a love of early mornings, trail runs, and the kind of brunch that earns it."</p></div>
+                  <div class="m-mlbl">Proposed Members</div>
+                  <div class="m-avs">
+                    <div class="a" style="background:#b45309">M</div>
+                    <div class="a" style="background:#0C7A50">P</div>
+                    <div class="a" style="background:#4A3DB5">J</div>
+                    <div class="a" style="background:#B03020">S</div>
+                    <div class="a more">+1</div>
+                  </div>
+                  <div class="m-tags">
+                    <span class="sk-tag amber">🌅 Early Riser</span>
+                    <span class="sk-tag green">🏃 Trail Running</span>
+                    <span class="sk-tag violet">🥑 Brunch</span>
+                  </div>
+                  <div class="scr-btn amber">Join This Tribe</div>
+                  <div class="m-see">See another option</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="stage-dots" id="stageDots">
+        <button class="stage-dot active" aria-label="Welcome"></button>
+        <button class="stage-dot" aria-label="Who's joining"></button>
+        <button class="stage-dot" aria-label="What lights you up"></button>
+        <button class="stage-dot" aria-label="Group size"></button>
+        <button class="stage-dot" aria-label="Your area"></button>
+        <button class="stage-dot" aria-label="Meet your Tribe"></button>
+      </div>
+      <div class="stage-caption" id="stageCaption">Welcome — let's find your people</div>
+      <div class="stage-hint">← Swipe the center phone · all three screens move with the flow →</div>
+    </div>
+  </section>
+
+  <!-- BRING YOUR PEOPLE -->
+  <section style="padding:72px 20px;text-align:center;border-top:1px solid var(--border)">
+    <div style="max-width:680px;margin:0 auto">
+      <div class="hero-label" style="justify-content:center;margin-bottom:14px"><span>Not just for meeting new people</span></div>
+      <h2 style="font-family:Georgia,serif;font-size:clamp(1.8rem,3.4vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.12;margin-bottom:20px">Bring your <em style="font-style:italic;color:var(--amber)">people.</em><br>Or find <em style="font-style:italic;color:var(--amber)">new ones.</em></h2>
+      <p style="font-size:15px;color:var(--muted);line-height:1.72;margin-bottom:18px">Skedaddle isn't only about meeting strangers. Bring the friends, family, or chosen crew you already have — and let us handle the planning, the venues, and the rhythm that turns "we should get together" into "we did."</p>
+      <p style="font-size:15px;color:var(--muted);line-height:1.72;margin-bottom:28px">Want new people in the mix too? Get matched into a Tribe and weave them in. Skedaddle works for the people you already love and the ones you haven't met yet.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <span style="display:inline-flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--border);border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;color:var(--text)"><span style="width:9px;height:9px;border-radius:50%;background:var(--amber)"></span>Bring who you've got</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--border);border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;color:var(--text)"><span style="width:9px;height:9px;border-radius:50%;background:var(--coral)"></span>Or find new ones</span>
+        <span style="display:inline-flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--border);border-radius:999px;padding:11px 20px;font-size:14px;font-weight:600;color:var(--text)"><span style="width:9px;height:9px;border-radius:50%;background:var(--green)"></span>Or do both</span>
       </div>
     </div>
   </section>
@@ -456,7 +876,6 @@
       </div>
       <div class="comp-grid">
         <div class="comp-col">
-          <h3>Meetup & Eventbrite</h3>
           <ul>
             <li>Browse events and hope someone shows up</li>
             <li>Random crowds with zero curation</li>
@@ -473,11 +892,11 @@
         <div class="comp-col sk">
           <h3>Skedaddle</h3>
           <ul>
-            <li>AI matches you to a curated, compatible Tribe</li>
-            <li>Compatibility-first grouping across 5 dimensions</li>
-            <li>Ongoing coordination engine — repeat experiences</li>
-            <li>System handles all logistics, weather, venue, RSVP</li>
-            <li>Connection Graph learns and improves every match</li>
+            <li>A matched Tribe built around your actual life</li>
+            <li>Five to seven people built to click with you</li>
+            <li>Recurring experiences that build real friendship</li>
+            <li>Logistics, venue, and timing all handled</li>
+            <li>Every match gets sharper as you use it</li>
           </ul>
         </div>
       </div>
@@ -489,39 +908,47 @@
     <div class="pillars-inner">
       <div class="section-header">
         <div class="sk-label">The platform</div>
-        <h2>Four layers.<br>One operating system for belonging.</h2>
+        <h2>Five layers.<br>One system for belonging.</h2>
       </div>
       <div class="pillars-grid">
         <div class="pillar">
           <div class="pillar-num">01</div>
           <div class="pillar-body">
-            <h3>Tribes <em>individual layer</em></h3>
-            <p>Small, AI-matched cohorts of 5–7 people. Matched on availability, interests, life stage, personality, and geography. The system proposes weekly shared experiences and tracks connection strength over time.</p>
-            <span class="pillar-tag">Strangers → real friends</span>
+            <h3>Tribes <em>Your people, found for you.</em></h3>
+            <p>A small group of five to seven people, matched on the things that actually make friendships stick. Skedaddle proposes a shared experience each week and learns what brings your group closer.</p>
+            <span class="pillar-tag">Your crew, picked for you</span>
           </div>
         </div>
         <div class="pillar">
           <div class="pillar-num">02</div>
           <div class="pillar-body">
-            <h3>Family Pods <em>household layer</em></h3>
-            <p>Families are multi-person systems with competing schedules. Skedaddle coordinates internal family experiences and cross-matches families based on children's ages, parenting values, and activity preferences.</p>
-            <span class="pillar-tag">Highest retention tier</span>
+            <h3>Family Tribe <em>Bring your own crew closer.</em></h3>
+            <p>Your family is a team with competing calendars and not enough shared time. Skedaddle coordinates experiences built around your household — the right activity, the right moment, the logistics handled.</p>
+            <span class="pillar-tag">Your nucleus, in sync</span>
           </div>
         </div>
         <div class="pillar">
           <div class="pillar-num">03</div>
           <div class="pillar-body">
-            <h3>Community OS <em>institution layer</em></h3>
-            <p>Churches, schools, and homeschool co-ops get a full belonging infrastructure. New members get automated matching to small groups, ministry roles, and activities. Admins track integration scores in real time.</p>
-            <span class="pillar-tag">SaaS revenue engine</span>
+            <h3>Family Pods <em>Find your village.</em></h3>
+            <p>Once your family's in rhythm, Skedaddle widens the circle — matching you with like-minded families nearby on your kids' ages, your values, and the activities you all love.</p>
+            <span class="pillar-tag">Families who fit</span>
           </div>
         </div>
         <div class="pillar">
           <div class="pillar-num">04</div>
           <div class="pillar-body">
-            <h3>Connection Graph™ <em>intelligence layer</em></h3>
-            <p>A behavioral property graph capturing every real-world experience outcome — attendance, satisfaction, repeat contact, trust signals. It learns what creates belonging and makes every future coordination smarter.</p>
-            <span class="pillar-tag">The data advantage</span>
+            <h3>Community OS <em>Turn newcomers into members who stay.</em></h3>
+            <p>Infrastructure for churches, schools, and community organizations. Welcome every newcomer, understand who they are, and connect them to the small groups, roles, and activities where they'll belong.</p>
+            <span class="pillar-tag">For institutions</span>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-num">05</div>
+          <div class="pillar-body">
+            <h3>Connection Graph™ <em>The system that learns what makes belonging work.</em></h3>
+            <p>Every shared experience teaches Skedaddle something. That understanding flows into every future match — so the platform grows sharper the more people it brings together.</p>
+            <span class="pillar-tag">Smarter with every connection</span>
           </div>
         </div>
       </div>
@@ -680,16 +1107,20 @@
     <div class="app-inner">
       <div class="app-text">
         <div class="sk-label" style="margin-bottom:8px">Available on mobile</div>
-        <h3>Skedaddle iOS app<br><em>coming soon.</em></h3>
-        <p>Built natively in Swift for iPhone. The full Connection Graph, Tribe matching, and experience coordination — in your pocket.</p>
+        <h3>Skedaddle,<br><em>in your pocket.</em></h3>
+        <p>The full Skedaddle experience — Tribe proposals, planned experiences, your Connection Graph — coming soon to iOS and Android. Designed for the moment you need it, wherever you are.</p>
       </div>
       <div class="app-badges">
         <a href="#waitlist" class="app-badge">
-          <span class="app-badge-icon">🍎</span>
+          <span class="app-badge-icon" aria-hidden="true">
+            <svg viewBox="0 0 384 512" width="22" height="22" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          </span>
           <div><div style="font-size:9px;opacity:.6;letter-spacing:.05em">COMING SOON TO</div><div>App Store</div></div>
         </a>
         <a href="#waitlist" class="app-badge">
-          <span class="app-badge-icon">🤖</span>
+          <span class="app-badge-icon" aria-hidden="true">
+            <svg viewBox="0 0 512 512" width="20" height="20"><path fill="#00d3ff" d="M47.6 33.2C42 39 38.7 47.9 38.7 59.5v393c0 11.6 3.3 20.5 9 26.3l1.3 1.2 220.2-220.2v-5.2L48.9 32z"/><path fill="#00f076" d="M342.4 333.3 269 259.8v-5.2l73.5-73.5 1.6 1L431 232.4c25 14.2 25 37.5 0 51.8l-87 49.1z"/><path fill="#ff3a44" d="M344 332.3 269 257.2 47.6 478.6c8.2 8.7 21.8 9.8 37.1 1.1z"/><path fill="#ffc900" d="M344 182.1 84.7 34.5c-15.3-8.7-28.9-7.6-37.1 1.1l221.4 221.3z"/></svg>
+          </span>
           <div><div style="font-size:9px;opacity:.6;letter-spacing:.05em">COMING SOON TO</div><div>Google Play</div></div>
         </a>
       </div>
@@ -813,6 +1244,139 @@
       btn.textContent = 'Join waitlist';
       btn.disabled = false;
     }
+
+    // ── 3D app showcase ────────────────────────────────────────────────────
+    (function(){
+      const stage    = document.getElementById('stage');
+      const scene    = document.getElementById('scene');
+      const screens  = Array.from(document.querySelectorAll('.phone-main [data-scr]'));
+      const dots     = Array.from(document.querySelectorAll('#stageDots .stage-dot'));
+      const caption  = document.getElementById('stageCaption');
+      const sideL    = document.querySelector('.phone-left .phone-screen');
+      const sideR    = document.querySelector('.phone-right .phone-screen');
+      if (!stage || !screens.length) return;
+
+      // Render a screen (cloned from the main flow) into a side phone
+      function renderSide(host, idx){
+        if (!host) return;
+        const clone = screens[idx].cloneNode(true);
+        clone.removeAttribute('data-scr');
+        clone.removeAttribute('style');      // drop any drag transforms
+        clone.classList.add('on');
+        clone.style.opacity = '0';
+        host.querySelector('.scr')?.remove();
+        host.appendChild(clone);
+        requestAnimationFrame(() => { clone.style.opacity = ''; });  // fade in
+      }
+      function renderSides(){
+        const N = screens.length;
+        renderSide(sideL, (cur - 1 + N) % N);   // previous step
+        renderSide(sideR, (cur + 1) % N);       // next step
+      }
+
+      const captions = [
+        'Welcome — let\'s find your people',
+        'Tell us who\'s joining today',
+        'Pick what lights you up',
+        'Choose your ideal group size',
+        'Set where you\'re based',
+        'Meet your AI-matched Tribe'
+      ];
+
+      let cur = 0, timer = null;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function show(i){
+        cur = (i + screens.length) % screens.length;
+        screens.forEach((s,n) => s.classList.toggle('on', n === cur));
+        dots.forEach((d,n) => d.classList.toggle('active', n === cur));
+        renderSides();
+        caption.style.opacity = 0;
+        setTimeout(() => { caption.textContent = captions[cur]; caption.style.opacity = 1; }, 220);
+      }
+      renderSides();   // initial side phones
+      function next(){ show(cur + 1); }
+      function start(){ if (!reduce) timer = setInterval(next, 3400); }
+      function stop(){ clearInterval(timer); }
+      function restart(){ stop(); start(); }
+
+      function prev(){ show(cur - 1); }
+
+      dots.forEach((d,n) => d.addEventListener('click', () => { show(n); restart(); }));
+      stage.addEventListener('mouseenter', stop);
+      stage.addEventListener('mouseleave', start);
+
+      // ── Swipe / drag to change screens ──────────────────────────────────
+      const swipeEl = document.querySelector('.phone-main .phone-screen');
+      if (swipeEl) {
+        let down = false, sx = 0, sy = 0, dx = 0, swiping = false;
+
+        function setDrag(px, fade){
+          const s = screens[cur];
+          s.style.transition = 'none';
+          s.style.transform  = px ? `translateX(${px}px)` : '';
+          s.style.opacity    = fade != null ? fade : '';
+        }
+        function clearDrag(){
+          const s = screens[cur];
+          s.style.transition = '';
+          s.style.transform  = '';
+          s.style.opacity    = '';
+        }
+
+        swipeEl.addEventListener('pointerdown', (e) => {
+          down = true; swiping = false; sx = e.clientX; sy = e.clientY; dx = 0;
+          stop();
+          swipeEl.setPointerCapture?.(e.pointerId);
+        });
+        swipeEl.addEventListener('pointermove', (e) => {
+          if (!down) return;
+          dx = e.clientX - sx;
+          const dy = e.clientY - sy;
+          if (!swiping && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) swiping = true;
+          if (swiping) {
+            e.preventDefault();
+            setDrag(dx * 0.45, String(Math.max(0.35, 1 - Math.abs(dx) / 520)));
+          }
+        });
+        function endSwipe(){
+          if (!down) return;
+          down = false;
+          clearDrag();
+          if (swiping && Math.abs(dx) > 45) { dx < 0 ? next() : prev(); }
+          swiping = false;
+          start();
+        }
+        swipeEl.addEventListener('pointerup', endSwipe);
+        swipeEl.addEventListener('pointercancel', endSwipe);
+        swipeEl.addEventListener('pointerleave', endSwipe);
+      }
+
+      // only auto-play / parallax when in view
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((es) => {
+          es.forEach(e => e.isIntersecting ? start() : stop());
+        }, { threshold: 0.25 }).observe(stage);
+      } else { start(); }
+
+      // mouse-driven 3D parallax tilt
+      if (!reduce && scene && window.matchMedia('(min-width: 981px)').matches) {
+        let raf = null, tx = 0, ty = 0, cx = 0, cy = 0;
+        stage.addEventListener('mousemove', (e) => {
+          const r = stage.getBoundingClientRect();
+          tx = ((e.clientX - r.left) / r.width  - 0.5) * 16;  // deg
+          ty = ((e.clientY - r.top)  / r.height - 0.5) * -10;
+          if (!raf) loop();
+        });
+        stage.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
+        function loop(){
+          cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+          scene.style.transform = `rotateY(${cx}deg) rotateX(${cy}deg)`;
+          if (Math.abs(tx-cx) > 0.05 || Math.abs(ty-cy) > 0.05) { raf = requestAnimationFrame(loop); }
+          else { raf = null; }
+        }
+      }
+    })();
 
     // ── Mobile menu ────────────────────────────────────────────────────────
     function toggleMenu() {
