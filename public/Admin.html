@@ -9,8 +9,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Manrope',system-ui,sans-serif;background:#F2F2F7;color:#1C1C1E;-webkit-font-smoothing:antialiased}
-    :root{--bg:#F2F2F7;--surf:#fff;--navy:#1e1b4b;--amber:#9C6500;--amber-bg:#FEF4DC;--amber-bd:rgba(156,101,0,.18);--green:#0C7A50;--green-bg:#E2F7EE;--green-bd:rgba(12,122,80,.18);--coral:#B03020;--coral-bg:#FDECEA;--coral-bd:rgba(176,48,32,.15);--violet:#4A3DB5;--violet-bg:#EDEAFC;--muted:rgba(60,60,67,.52);--border:rgba(60,60,67,.13);--border2:rgba(60,60,67,.22)}
+    body{font-family:'Manrope',system-ui,sans-serif;background:#F5F0E1;color:#2C3B2F;-webkit-font-smoothing:antialiased}
+    :root{--bg:#F5F0E1;--surf:#FFFCF6;--navy:#2C3B2F;--amber:#C8784A;--amber-bg:#F5D4BC;--amber-bd:rgba(200,120,74,.26);--green:#5A7D55;--green-bg:#E4EBD7;--green-bd:rgba(90,125,85,.24);--coral:#B5482C;--coral-bg:#F5D9C7;--coral-bd:rgba(181,72,44,.22);--violet:#5F6E49;--violet-bg:#DDE4CF;--muted:#56635A;--border:rgba(44,59,47,.14);--border2:rgba(44,59,47,.24)}
     #loginScreen{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
     .login-box{background:var(--surf);border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center}
     .login-badge{width:56px;height:56px;background:var(--navy);border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:28px;font-weight:700;color:#fff;margin:0 auto 16px}
@@ -37,7 +37,7 @@
     .stat-card{background:var(--surf);border-radius:16px;padding:20px;border:1px solid var(--border)}
     .stat-card.amber{background:var(--amber-bg);border-color:var(--amber-bd)}
     .stat-card.green{background:var(--green-bg);border-color:var(--green-bd)}
-    .stat-card.violet{background:var(--violet-bg);border-color:rgba(74,61,181,.15)}
+    .stat-card.violet{background:var(--violet-bg);border-color:rgba(95,110,73,.24)}
     .stat-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
     .stat-value{font-family:Georgia,serif;font-size:32px;font-weight:700;color:var(--navy);line-height:1}
     .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
@@ -57,7 +57,7 @@
     .action-btn.secondary{background:var(--bg);color:var(--navy);border:1.5px solid var(--border2)}
     .action-btn.secondary:hover{border-color:var(--navy)}
     .action-btn.green{background:var(--green);color:#fff}
-    .action-btn.green:hover{background:#0a5e3e}
+    .action-btn.green:hover{background:#466640}
     .table-wrap{overflow-x:auto}
     table{width:100%;border-collapse:collapse}
     thead tr{background:var(--bg);border-bottom:1px solid var(--border)}
@@ -71,7 +71,7 @@
     td.email a{color:var(--navy);text-decoration:none;font-weight:600}
     td.email a:hover{color:var(--amber);text-decoration:underline}
     .source-badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px}
-    .source-badge.popup{background:var(--violet-bg);color:var(--violet);border:1px solid rgba(74,61,181,.2)}
+    .source-badge.popup{background:var(--violet-bg);color:var(--violet);border:1px solid rgba(95,110,73,.3)}
     .source-badge.landing{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
     .row-num{font-size:12px;color:var(--muted);font-weight:400}
     .delete-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 6px;border-radius:6px;transition:all .2s}
@@ -209,7 +209,7 @@
         updateStats(); filterTable();
         showToast(`Loaded ${allData.length} entries`);
       } catch(e) {
-        document.getElementById('tableBody').innerHTML = '<tr class="empty-row"><td colspan="7">❌ Could not connect to Firebase.<br><small style="font-size:11px;color:#B03020">Check your Firebase config in admin.html</small></td></tr>';
+        document.getElementById('tableBody').innerHTML = '<tr class="empty-row"><td colspan="7">❌ Could not connect to Firebase.<br><small style="font-size:11px;color:#B5482C">Check your Firebase config in admin.html</small></td></tr>';
       }
     }
 
