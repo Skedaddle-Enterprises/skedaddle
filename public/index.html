@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Skedaddle — Real people.Real places.Real belonging.</title>
+  <title>Skedaddle — Real people. Real places. Real belonging.</title>
   <meta name="description" content="Skedaddle is an AI coordination engine that moves people from strangers to shared real-world experiences — in days, not months."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -228,15 +228,26 @@
     /* ── HOW IT WORKS ─────────────────────────────────────────── */
     .how{padding:72px 20px;background:var(--surf);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     .how-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:start}
-    .steps{display:flex;flex-direction:column}
-    .step{display:flex;gap:20px}
-    .step-left{display:flex;flex-direction:column;align-items:center}
     .step-circle{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-    .step-line{flex:1;width:1px;background:var(--border);margin:4px 0;min-height:40px}
-    .step:last-child .step-line{display:none}
-    .step-content{padding-top:4px;padding-bottom:28px}
+    .step-content{padding-top:4px}
     .step-content h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
     .step-content p{font-size:13px;font-weight:400;color:var(--muted);line-height:1.65}
+
+    /* Steps carousel — storyboard-style slide-through of the 4 steps */
+    .steps-carousel{width:100%}
+    .steps-track{position:relative;min-height:150px}
+    .step-slide{position:absolute;inset:0;display:flex;gap:18px;align-items:flex-start;opacity:0;transform:translateX(60px);transition:transform .6s cubic-bezier(.16,.7,.3,1),opacity .5s ease;pointer-events:none}
+    .step-slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
+    .step-slide.prev{opacity:0;transform:translateX(-60px)}
+    .steps-controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:24px}
+    .steps-arrow{width:34px;height:34px;border-radius:50%;background:var(--bg);border:1px solid var(--border2);color:var(--navy);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s;flex-shrink:0}
+    .steps-arrow:hover{border-color:var(--navy);background:var(--violet-bg)}
+    .steps-dots{display:flex;gap:8px}
+    .steps-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);border:none;cursor:pointer;padding:0;transition:background .25s,width .25s}
+    .steps-dot.active{background:var(--amber);width:22px;border-radius:999px}
+    @media(max-width:600px){
+      .steps-track{min-height:200px}
+    }
 
     /* ── TIERS ────────────────────────────────────────────────── */
     .tiers{padding:72px 20px}
@@ -487,6 +498,7 @@
     }
     @media(prefers-reduced-motion:reduce){
       .phone-main,.phone-left,.phone-right,.float-chip,.cg-ring{animation:none!important}
+      .step-slide{transition:none!important}
     }
 
     /* ── ANIMATIONS ───────────────────────────────────────────── */
@@ -591,7 +603,7 @@
   <!-- TICKER -->
   <div class="ticker" role="marquee">
     <div class="ticker-track">
-      <span class="ticker-item">🚀 App launching soon <span class="ticker-dot"></span></span>
+      <span class="ticker-item">App launching soon <span class="ticker-dot"></span></span>
       <span class="ticker-item">Join the waitlist today <span class="ticker-dot"></span></span>
       <span class="ticker-item">AI-matched real-world experiences <span class="ticker-dot"></span></span>
       <span class="ticker-item">Now accepting early access signups <span class="ticker-dot"></span></span>
@@ -599,7 +611,7 @@
       <span class="ticker-item">Launching in select cities soon <span class="ticker-dot"></span></span>
       <span class="ticker-item">Connection Graph™ — your social moat <span class="ticker-dot"></span></span>
       <!-- Duplicate for seamless loop -->
-      <span class="ticker-item">🚀 App launching soon <span class="ticker-dot"></span></span>
+      <span class="ticker-item">App launching soon <span class="ticker-dot"></span></span>
       <span class="ticker-item">Join the waitlist today <span class="ticker-dot"></span></span>
       <span class="ticker-item">AI-matched real-world experiences <span class="ticker-dot"></span></span>
       <span class="ticker-item">Now accepting early access signups <span class="ticker-dot"></span></span>
@@ -650,7 +662,7 @@
           </div>
         </div>
         <div class="hero-visual">
-          <p class="hero-visual-label">The coordination engine at work</p>
+          <p class="hero-visual-label">What Skedaddle handles for you</p>
           <div class="hero-stats">
             <div class="hero-stat"><div class="hero-stat-num">4<span>×</span></div><div class="hero-stat-lbl">Faster social integration than traditional methods</div></div>
             <div class="hero-stat"><div class="hero-stat-num">5–7</div><div class="hero-stat-lbl">AI-matched Tribe size for optimal bonding</div></div>
@@ -668,7 +680,7 @@
     <div class="hero-img-overlay">
       <div class="hero-img-caption">
         <div class="cap-label">What Skedaddle creates</div>
-        <h2>Belonging,<br><em>by design.</em></h2>
+        <h2>We handle logistics.<br><em>You just show up.</em></h2>
         <p>Matched groups, real places, and the kind of community that doesn't happen by accident. The hardest parts of finding your people — handled, so all that's left is showing up.</p>
       </div>
     </div>
@@ -939,7 +951,7 @@
     <div class="pillars-inner">
       <div class="section-header">
         <div class="sk-label">The platform</div>
-        <h2>Five layers.<br>One system for belonging.</h2>
+        <h2>Five layers.<br>One place that does the work.</h2>
       </div>
       <div class="pillars-grid">
         <div class="pillar">
@@ -977,7 +989,7 @@
         <div class="pillar">
           <div class="pillar-num">05</div>
           <div class="pillar-body">
-            <h3>Connection Graph™ <em>The system that learns what makes belonging work.</em></h3>
+            <h3>Connection Graph™ <em>Gets smarter every time you show up.</em></h3>
             <p>Every shared experience teaches Skedaddle something. That understanding flows into every future match — so the platform grows sharper the more people it brings together.</p>
             <span class="pillar-tag">Smarter with every connection</span>
           </div>
@@ -1041,7 +1053,7 @@
       <div class="graph-card">
         <div>
           <div class="graph-label">Connection Graph™</div>
-          <h2>The system learns<br>what creates<br>belonging.</h2>
+          <h2>The part you never see,<br>but always<br>feel.</h2>
           <p>Every attended experience, satisfaction signal, and retained relationship feeds a proprietary graph that makes Skedaddle smarter and harder to copy over time. The data advantage compounds with every user.</p>
           <div class="graph-insight">
             <p>"Families matched via outdoor activities show 3× retention vs. dining-only events." — the graph learns this and shifts future coordination accordingly.</p>
@@ -1082,22 +1094,34 @@
         </div>
         <p style="font-size:14px;color:var(--muted);line-height:1.7">The coordination engine handles everything from intake to outcome. You just show up.</p>
       </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
-          <div class="step-content"><h4>Profile &amp; intake</h4><p>Life stage, interests, schedule, social comfort level, and personality style — captured once, refined continuously through behavior.</p></div>
+      <div class="steps-carousel" id="stepsCarousel">
+        <div class="steps-track" id="stepsTrack">
+          <div class="step-slide active" data-step="0">
+            <div class="step-circle">1</div>
+            <div class="step-content"><h4>Profile &amp; intake</h4><p>Life stage, interests, schedule, social comfort level, and personality style — captured once, refined continuously through behavior.</p></div>
+          </div>
+          <div class="step-slide" data-step="1">
+            <div class="step-circle">2</div>
+            <div class="step-content"><h4>Tribe assignment</h4><p>The Assimilation Engine matches you to 5–7 compatible people nearby with overlapping availability and shared core interests.</p></div>
+          </div>
+          <div class="step-slide" data-step="2">
+            <div class="step-circle">3</div>
+            <div class="step-content"><h4>AI proposes the experience</h4><p>Weather check, venue selection, travel time fairness, RSVP flow — all handled automatically. You get a ready-to-confirm invite.</p></div>
+          </div>
+          <div class="step-slide" data-step="3">
+            <div class="step-circle">4</div>
+            <div class="step-content"><h4>Show up and connect</h4><p>Post-experience feedback feeds back into the Connection Graph, improving every future match for you and your tribe.</p></div>
+          </div>
         </div>
-        <div class="step">
-          <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
-          <div class="step-content"><h4>Tribe assignment</h4><p>The Assimilation Engine matches you to 5–7 compatible people nearby with overlapping availability and shared core interests.</p></div>
-        </div>
-        <div class="step">
-          <div class="step-left"><div class="step-circle">3</div><div class="step-line"></div></div>
-          <div class="step-content"><h4>AI proposes the experience</h4><p>Weather check, venue selection, travel time fairness, RSVP flow — all handled automatically. You get a ready-to-confirm invite.</p></div>
-        </div>
-        <div class="step">
-          <div class="step-left"><div class="step-circle">4</div><div class="step-line"></div></div>
-          <div class="step-content"><h4>Show up and connect</h4><p>Post-experience feedback feeds back into the Connection Graph, improving every future match for you and your tribe.</p></div>
+        <div class="steps-controls">
+          <button class="steps-arrow" id="stepsPrev" aria-label="Previous step" type="button">←</button>
+          <div class="steps-dots" id="stepsDots">
+            <button class="steps-dot active" aria-label="Step 1: Profile and intake" type="button"></button>
+            <button class="steps-dot" aria-label="Step 2: Tribe assignment" type="button"></button>
+            <button class="steps-dot" aria-label="Step 3: AI proposes the experience" type="button"></button>
+            <button class="steps-dot" aria-label="Step 4: Show up and connect" type="button"></button>
+          </div>
+          <button class="steps-arrow" id="stepsNext" aria-label="Next step" type="button">→</button>
         </div>
       </div>
     </div>
@@ -1127,7 +1151,7 @@
           <div class="tier-icon">🏛️</div>
           <h3>Churches &amp; schools</h3>
           <span class="tier-sub">Institution · Community OS</span>
-          <p>Turn a passive welcome email into a full belonging infrastructure. Know exactly how well each newcomer is integrating — and automate the coordination that makes them stay.</p>
+          <p>Turn a passive welcome email into people who actually come back. Know exactly how each newcomer is settling in — and automate the follow-through that makes them stay.</p>
         </div>
       </div>
     </div>
@@ -1179,7 +1203,7 @@
           <div class="nav-logo-badge">S</div>
           <div class="nav-logo-text">Sked<span>addle</span></div>
         </a>
-        <p>An AI-orchestrated social coordination platform. We're not building social features. We're building the engine that turns aligned people into repeated real-world experiences.</p>
+        <p>We handle the logistics of friendship — the planning, the scheduling, the follow-through — so real relationships have room to happen.</p>
       </div>
       <div class="footer-col">
         <h4>Product</h4>
@@ -1205,7 +1229,6 @@
           <li><a href="#">Privacy Policy</a></li>
           <li><a href="#">Terms of Service</a></li>
           <li><a href="#">Cookie Policy</a></li>
-          <li><a href="admin.html" style="color:rgba(255,255,255,.25);font-size:11px">Admin ↗</a></li>
         </ul>
       </div>
     </div>
@@ -1327,7 +1350,7 @@
       }
       renderSides();   // initial side phones
       function next(){ show(cur + 1); }
-      function start(){ if (!reduce) timer = setInterval(next, 3400); }
+      function start(){ if (!reduce) timer = setInterval(next, 6000); }
       function stop(){ clearInterval(timer); }
       function restart(){ stop(); start(); }
 
@@ -1435,6 +1458,49 @@
           else { raf = null; }
         }
       }
+    })();
+
+    // ── How-it-works steps carousel ───────────────────────────────────────
+    (function(){
+      const carousel = document.getElementById('stepsCarousel');
+      const track     = document.getElementById('stepsTrack');
+      if (!carousel || !track) return;
+      const slides  = Array.from(track.querySelectorAll('.step-slide'));
+      const dots    = Array.from(document.querySelectorAll('#stepsDots .steps-dot'));
+      const prevBtn = document.getElementById('stepsPrev');
+      const nextBtn = document.getElementById('stepsNext');
+      const reduce  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let cur = 0, timer = null;
+
+      function show(i){
+        const n = slides.length;
+        const target = (i + n) % n;
+        slides.forEach((s, idx) => {
+          s.classList.remove('prev');
+          if (idx === cur && idx !== target) s.classList.add('prev');
+          s.classList.toggle('active', idx === target);
+        });
+        dots.forEach((d, idx) => d.classList.toggle('active', idx === target));
+        cur = target;
+      }
+      function next(){ show(cur + 1); }
+      function prev(){ show(cur - 1); }
+      function start(){ if (!reduce) timer = setInterval(next, 4200); }
+      function stop(){ clearInterval(timer); }
+      function restart(){ stop(); start(); }
+
+      dots.forEach((d, n) => d.addEventListener('click', () => { show(n); restart(); }));
+      nextBtn?.addEventListener('click', () => { next(); restart(); });
+      prevBtn?.addEventListener('click', () => { prev(); restart(); });
+      carousel.addEventListener('mouseenter', stop);
+      carousel.addEventListener('mouseleave', start);
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((es) => {
+          es.forEach(e => e.isIntersecting ? start() : stop());
+        }, { threshold: 0.3 }).observe(carousel);
+      } else { start(); }
     })();
 
     // ── Mobile menu ────────────────────────────────────────────────────────

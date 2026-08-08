@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script>
+    // Decide login vs. dashboard before first paint — avoids a flash of the
+    // login screen on every reload when a session is already active.
+    if (sessionStorage.getItem('sk_admin') === '1') {
+      document.documentElement.classList.add('sk-authed');
+    }
+  </script>
   <title>Skedaddle — Waitlist Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -22,6 +29,8 @@
     .login-btn:hover{background:var(--violet)}
     .login-err{font-size:12px;color:var(--coral);margin-top:8px;display:none}
     #adminScreen{display:none;min-height:100vh}
+    html.sk-authed #loginScreen{display:none}
+    html.sk-authed #adminScreen{display:block}
     header{background:var(--navy);padding:0 24px}
     .header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 0}
     .header-logo{display:flex;align-items:center;gap:10px}
@@ -79,6 +88,15 @@
     .loading-row td,.empty-row td{text-align:center;padding:48px 20px;color:var(--muted);font-size:14px}
     .loading-spinner{display:inline-block;width:24px;height:24px;border:2.5px solid var(--border2);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:10px}
     @keyframes spin{to{transform:rotate(360deg)}}
+    .live-toggle-row{display:flex;align-items:center;gap:12px}
+    .live-switch{position:relative;width:46px;height:26px;flex-shrink:0}
+    .live-switch input{opacity:0;width:0;height:0}
+    .live-switch .track{position:absolute;inset:0;background:var(--border2);border-radius:999px;cursor:pointer;transition:background .2s}
+    .live-switch .track::before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+    .live-switch input:checked + .track{background:var(--green)}
+    .live-switch input:checked + .track::before{transform:translateX(20px)}
+    .live-switch input:disabled + .track{cursor:not-allowed;opacity:.7}
+    .live-status-text{font-size:12px;color:var(--muted)}
     .toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;font-size:13px;font-weight:600;padding:12px 18px;border-radius:12px;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
     .toast.show{transform:translateY(0);opacity:1}
     .table-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
@@ -106,6 +124,15 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // ── LAUNCH ANNOUNCEMENT CONFIG ───────────────────────────────────────────
+    // URL of the deployed `sendLaunchAnnouncement` Cloud Function (1st-gen
+    // functions default to us-central1, so this URL is predictable — no need
+    // to change it unless you deployed to a different region).
+    const LAUNCH_FUNCTION_URL = 'https://us-central1-skedaddle-websitelanding.cloudfunctions.net/sendLaunchAnnouncement';
+    // Must exactly match the value you set with:
+    //   firebase functions:secrets:set ADMIN_TRIGGER_SECRET
+    const ADMIN_TRIGGER_SECRET = 'PASTE_YOUR_ADMIN_TRIGGER_SECRET_HERE';
   </script>
 
   <div id="loginScreen">
@@ -138,6 +165,23 @@
         <div class="stat-card green"><div class="stat-label">Today</div><div class="stat-value" id="statToday">—</div><div class="stat-sub">New signups</div></div>
         <div class="stat-card violet"><div class="stat-label">This week</div><div class="stat-value" id="statWeek">—</div><div class="stat-sub">Last 7 days</div></div>
         <div class="stat-card"><div class="stat-label">From popup</div><div class="stat-value" id="statPopup">—</div><div class="stat-sub">vs CTA button</div></div>
+      </div>
+      <div class="table-card" style="margin-bottom:20px">
+        <div class="table-header">
+          <div class="table-header-left">
+            <h2>Launch Announcement</h2>
+            <p id="launchSubtitle">Flip this on once the app is live — everyone on the waitlist is emailed immediately with the download links. This can't be undone.</p>
+          </div>
+          <div class="table-actions">
+            <div class="live-toggle-row">
+              <span class="live-status-text" id="liveStatusText">Checking status…</span>
+              <label class="live-switch">
+                <input type="checkbox" id="liveToggle" disabled onchange="onLiveToggleChange(this)"/>
+                <span class="track"></span>
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="table-card">
         <div class="table-header">
@@ -189,6 +233,7 @@
         document.getElementById('adminScreen').style.display = 'block';
         sessionStorage.setItem('sk_admin', '1');
         loadData();
+        loadLiveStatus();
       } else {
         document.getElementById('loginErr').style.display = 'block';
         document.getElementById('pwInput').value = '';
@@ -196,9 +241,8 @@
     }
     function doLogout() { sessionStorage.removeItem('sk_admin'); location.reload(); }
     if (sessionStorage.getItem('sk_admin') === '1') {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminScreen').style.display = 'block';
       loadData();
+      loadLiveStatus();
     }
 
     async function loadData() {
@@ -297,6 +341,69 @@
       a.download=`skedaddle-waitlist-${new Date().toISOString().split('T')[0]}.csv`;
       a.click();
       showToast(`Exported ${filtered.length} rows`);
+    }
+
+    async function loadLiveStatus() {
+      const toggle = document.getElementById('liveToggle');
+      const text = document.getElementById('liveStatusText');
+      try {
+        const doc = await db.collection('config').doc('site').get();
+        const data = doc.exists ? doc.data() : null;
+        if (data && data.isLive) {
+          toggle.checked = true;
+          toggle.disabled = true; // already sent — one-way switch
+          const when = data.wentLiveAt?.toDate ? data.wentLiveAt.toDate().toLocaleString() : 'recently';
+          text.textContent = `Live since ${when} · ${data.notifiedCount ?? '?'} people notified`;
+        } else {
+          toggle.checked = false;
+          toggle.disabled = false;
+          text.textContent = 'Not live yet';
+        }
+      } catch (e) {
+        text.textContent = 'Could not check live status';
+      }
+    }
+
+    async function onLiveToggleChange(el) {
+      if (!el.checked) return; // switching off isn't supported — emails can't be unsent
+      if (ADMIN_TRIGGER_SECRET === 'PASTE_YOUR_ADMIN_TRIGGER_SECRET_HERE') {
+        showToast('Set ADMIN_TRIGGER_SECRET in Admin.html first');
+        el.checked = false;
+        return;
+      }
+      const count = allData.length;
+      if (!confirm(`This will mark Skedaddle as live and immediately email all ${count} waitlist signups with the download links. This cannot be undone. Continue?`)) {
+        el.checked = false;
+        return;
+      }
+
+      el.disabled = true;
+      showToast('Sending launch announcement…');
+      try {
+        const resp = await fetch(LAUNCH_FUNCTION_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Admin-Secret': ADMIN_TRIGGER_SECRET },
+          body: JSON.stringify({}),
+        });
+        const body = await resp.json();
+        if (resp.status === 409) {
+          showToast('Already live — syncing status');
+          await loadLiveStatus();
+          return;
+        }
+        if (!resp.ok) {
+          showToast(`Failed: ${body.error || resp.status}`);
+          el.checked = false;
+          el.disabled = false;
+          return;
+        }
+        showToast(`Live! Notified ${body.sent} people`);
+        await loadLiveStatus();
+      } catch (e) {
+        showToast('Failed to reach the launch function');
+        el.checked = false;
+        el.disabled = false;
+      }
     }
 
     function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
