@@ -235,7 +235,7 @@
 
     /* Steps carousel — storyboard-style slide-through of the 4 steps */
     .steps-carousel{width:100%}
-    .steps-track{position:relative;min-height:150px}
+    .steps-track{position:relative;min-height:150px;overflow:hidden}
     .step-slide{position:absolute;inset:0;display:flex;gap:18px;align-items:flex-start;opacity:0;transform:translateX(60px);transition:transform .6s cubic-bezier(.16,.7,.3,1),opacity .5s ease;pointer-events:none}
     .step-slide.active{opacity:1;transform:translateX(0);pointer-events:auto}
     .step-slide.prev{opacity:0;transform:translateX(-60px)}
@@ -1053,7 +1053,7 @@
       <div class="graph-card">
         <div>
           <div class="graph-label">Connection Graph™</div>
-          <h2>The part you never see,<br>but always<br>feel.</h2>
+          <h2>The part you never see, <br>but always <br>feel.</h2>
           <p>Every attended experience, satisfaction signal, and retained relationship feeds a proprietary graph that makes Skedaddle smarter and harder to copy over time. The data advantage compounds with every user.</p>
           <div class="graph-insight">
             <p>"Families matched via outdoor activities show 3× retention vs. dining-only events." — the graph learns this and shifts future coordination accordingly.</p>
