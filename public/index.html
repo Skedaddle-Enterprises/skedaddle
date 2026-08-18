@@ -79,8 +79,9 @@
     nav{position:sticky;top:0;z-index:100;background:rgba(245,240,225,.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
     .nav-inner{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;max-width:1160px;margin:0 auto}
     .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-    .nav-logo-badge{width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;font-family:Georgia,serif;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
-    .nav-logo:hover .nav-logo-badge{background:var(--amber)}
+    .nav-logo-badge{width:34px;height:34px;border-radius:10px;background:var(--surf);border:1px solid var(--border);flex-shrink:0;overflow:hidden;padding:3px;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+    .nav-logo-badge img{width:100%;height:100%;object-fit:contain;display:block}
+    .nav-logo:hover .nav-logo-badge{transform:scale(1.06)}
     .nav-logo-text{font-family:Georgia,serif;font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-.3px}
     .nav-logo-text span{color:var(--amber)}
     .nav-links{display:flex;gap:24px;list-style:none;align-items:center}
@@ -290,7 +291,7 @@
     footer{background:var(--navy);color:rgba(255,255,255,.55);padding:48px 20px 24px}
     .footer-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px}
     .footer-brand .nav-logo{margin-bottom:14px;display:inline-flex}
-    .footer-brand .nav-logo-badge{background:rgba(255,255,255,.1)}
+    .footer-brand .nav-logo-badge{background:var(--surf);border-color:transparent}
     .footer-brand .nav-logo-text{color:#fff}
     .footer-brand p{font-size:12px;font-weight:400;line-height:1.65;color:rgba(255,255,255,.4);max-width:260px}
     .footer-col h4{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:14px}
@@ -394,7 +395,8 @@
 
     /* App brand mark (welcome) */
     .scr-brand{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6px}
-    .scr-brand .logo{width:64px;height:64px;border-radius:18px;background:var(--navy);color:#fff;font-family:Georgia,serif;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+    .scr-brand .logo{width:64px;height:64px;border-radius:18px;background:var(--surf);border:1px solid var(--border);overflow:hidden;padding:8px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+    .scr-brand .logo img{width:100%;height:100%;object-fit:contain;display:block}
     .scr-brand .wm{font-family:Georgia,serif;font-size:19px;font-weight:700;color:var(--navy);margin-bottom:22px}
     .scr-brand .wm span{color:var(--amber)}
     .scr-brand h3{font-family:Georgia,serif;font-size:2rem;font-weight:700;color:var(--navy);line-height:1.08;margin-bottom:14px}
@@ -625,7 +627,7 @@
   <nav>
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <div class="nav-logo-badge">S</div>
+        <div class="nav-logo-badge"><img src="logo-mark.svg" alt="" width="34" height="34"/></div>
         <div class="nav-logo-text">Sked<span>addle</span></div>
       </a>
       <ul class="nav-links">
@@ -633,6 +635,7 @@
         <li><a href="#how">How it works</a></li>
         <li><a href="#tiers">Who it's for</a></li>
         <li><a href="#graph">The tech</a></li>
+        <li><a href="team.html">Team</a></li>
         <li><a href="#waitlist" class="nav-cta">Get early access</a></li>
       </ul>
       <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
@@ -644,6 +647,7 @@
       <a href="#how">How it works</a>
       <a href="#tiers">Who it's for</a>
       <a href="#graph">The tech</a>
+      <a href="team.html">Team</a>
       <a href="#waitlist">Get early access</a>
     </div>
   </nav>
@@ -764,7 +768,7 @@
               <div class="scr on" data-scr="0">
                 <div class="scr-status"><span>9:41</span><span class="sig">5G ▸▸</span></div>
                 <div class="scr-brand">
-                  <div class="logo">S</div>
+                  <div class="logo"><img src="logo-mark.svg" alt="" width="64" height="64"/></div>
                   <div class="wm">Sked<span>addle</span></div>
                   <h3>Let's find <em>your people.</em></h3>
                   <p>A few warm questions. Then we'll show you who you're meant to meet.</p>
@@ -1200,7 +1204,7 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <a href="#" class="nav-logo">
-          <div class="nav-logo-badge">S</div>
+          <div class="nav-logo-badge"><img src="logo-mark.svg" alt="" width="34" height="34"/></div>
           <div class="nav-logo-text">Sked<span>addle</span></div>
         </a>
         <p>We handle the logistics of friendship — the planning, the scheduling, the follow-through — so real relationships have room to happen.</p>
@@ -1217,9 +1221,9 @@
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
+          <li><a href="team.html">Team</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Careers</a></li>
-          <li><a href="#">Press</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
       </div>
