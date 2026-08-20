@@ -183,6 +183,41 @@
           </div>
         </div>
       </div>
+      <!-- WEBSITE ANALYTICS -->
+      <div class="stats-grid">
+        <div class="stat-card violet"><div class="stat-label">Total page views</div><div class="stat-value" id="paTotal">—</div><div class="stat-sub">All tracked visits</div></div>
+        <div class="stat-card amber"><div class="stat-label">Unique visitors</div><div class="stat-value" id="paVisitors">—</div><div class="stat-sub">Distinct devices</div></div>
+        <div class="stat-card green"><div class="stat-label">Views today</div><div class="stat-value" id="paToday">—</div><div class="stat-sub">Since midnight</div></div>
+        <div class="stat-card"><div class="stat-label">Countries</div><div class="stat-value" id="paCountries">—</div><div class="stat-sub">Reached so far</div></div>
+      </div>
+      <div class="table-card" style="margin-bottom:20px">
+        <div class="table-header">
+          <div class="table-header-left">
+            <h2>Visitor Locations</h2>
+            <p id="paSubtitle">Loading analytics…</p>
+          </div>
+          <div class="table-actions">
+            <button class="action-btn secondary" onclick="loadAnalytics()">↻ Refresh</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Location</th>
+                <th>Country</th>
+                <th>Views</th>
+                <th>Visitors</th>
+              </tr>
+            </thead>
+            <tbody id="paLocBody">
+              <tr class="loading-row"><td colspan="5"><div class="loading-spinner"></div><div>Loading locations…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="table-card">
         <div class="table-header">
           <div class="table-header-left">
@@ -234,6 +269,7 @@
         sessionStorage.setItem('sk_admin', '1');
         loadData();
         loadLiveStatus();
+        loadAnalytics();
       } else {
         document.getElementById('loginErr').style.display = 'block';
         document.getElementById('pwInput').value = '';
@@ -243,6 +279,7 @@
     if (sessionStorage.getItem('sk_admin') === '1') {
       loadData();
       loadLiveStatus();
+      loadAnalytics();
     }
 
     async function loadData() {
@@ -408,6 +445,74 @@
 
     function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
     function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+    // ── Website analytics ──────────────────────────────────────────────────
+    function flagEmoji(cc){
+      if(!cc || cc.length!==2) return '🌐';
+      const A=0x1F1E6, base='A'.charCodeAt(0);
+      const c=cc.toUpperCase();
+      return String.fromCodePoint(A+(c.charCodeAt(0)-base)) + String.fromCodePoint(A+(c.charCodeAt(1)-base));
+    }
+
+    async function loadAnalytics() {
+      const body = document.getElementById('paLocBody');
+      body.innerHTML = '<tr class="loading-row"><td colspan="5"><div class="loading-spinner"></div><div>Loading locations…</div></td></tr>';
+      try {
+        const snap = await db.collection('pageviews').orderBy('timestamp','desc').limit(5000).get();
+        const rows = snap.docs.map(d => d.data());
+
+        // Totals
+        const total = rows.length;
+        const visitors = new Set(rows.map(r => r.visitorId).filter(Boolean)).size;
+        const now = new Date(), today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+        let todayCount = 0;
+        const countrySet = new Set();
+        rows.forEach(r => {
+          const ts = r.timestamp && r.timestamp.toDate ? r.timestamp.toDate() : null;
+          if (ts && ts >= today) todayCount++;
+          if (r.country) countrySet.add(r.country);
+        });
+        document.getElementById('paTotal').textContent     = total.toLocaleString();
+        document.getElementById('paVisitors').textContent  = visitors.toLocaleString();
+        document.getElementById('paToday').textContent     = todayCount.toLocaleString();
+        document.getElementById('paCountries').textContent = countrySet.size.toLocaleString();
+
+        // Group by city + country
+        const byLoc = {};
+        rows.forEach(r => {
+          const country = r.country || 'Unknown';
+          const city = r.city || '—';
+          const cc = r.countryCode || '';
+          const key = country + '|' + city;
+          if (!byLoc[key]) byLoc[key] = { country, city, cc, views: 0, vis: new Set() };
+          byLoc[key].views++;
+          if (r.visitorId) byLoc[key].vis.add(r.visitorId);
+        });
+        const locs = Object.values(byLoc)
+          .map(l => ({ country: l.country, city: l.city, cc: l.cc, views: l.views, visitors: l.vis.size }))
+          .sort((a,b) => b.views - a.views);
+
+        document.getElementById('paSubtitle').textContent =
+          total ? `${total.toLocaleString()} views from ${locs.length} location${locs.length===1?'':'s'}` : 'No visits tracked yet';
+
+        if (!locs.length) {
+          body.innerHTML = '<tr class="empty-row"><td colspan="5">No visits tracked yet. Views will appear here once people load the site.</td></tr>';
+          return;
+        }
+        body.innerHTML = locs.slice(0, 100).map((l,i) => `
+          <tr>
+            <td class="row-num">${i+1}</td>
+            <td style="font-weight:600">${esc(l.city)}</td>
+            <td>${flagEmoji(l.cc)} ${esc(l.country)}</td>
+            <td>${l.views.toLocaleString()}</td>
+            <td style="color:var(--muted)">${l.visitors.toLocaleString()}</td>
+          </tr>`).join('');
+      } catch (e) {
+        console.error('analytics error', e);
+        document.getElementById('paSubtitle').textContent = 'Could not load analytics';
+        body.innerHTML = '<tr class="empty-row"><td colspan="5">❌ Could not load analytics.<br><small style="font-size:11px;color:#B5482C">Make sure the updated firestore.rules are deployed.</small></td></tr>';
+      }
+    }
   </script>
 </body>
 </html>

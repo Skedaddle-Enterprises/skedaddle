@@ -22,6 +22,24 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Website analytics — anyone can log a pageview; only the admin page reads.
+    match /pageviews/{docId} {
+      allow read: if true;
+
+      allow create: if
+        request.resource.data.keys().hasOnly(['page', 'referrer', 'visitorId', 'country', 'countryCode', 'region', 'city', 'timestamp', 'userAgent'])
+        && request.resource.data.page is string && request.resource.data.page.size() < 500
+        && request.resource.data.referrer is string && request.resource.data.referrer.size() < 500
+        && request.resource.data.visitorId is string && request.resource.data.visitorId.size() < 64
+        && request.resource.data.country is string && request.resource.data.country.size() < 100
+        && request.resource.data.countryCode is string && request.resource.data.countryCode.size() < 8
+        && request.resource.data.region is string && request.resource.data.region.size() < 100
+        && request.resource.data.city is string && request.resource.data.city.size() < 100
+        && request.resource.data.userAgent is string && request.resource.data.userAgent.size() < 200;
+
+      allow update, delete: if false;
+    }
+
     // Written only by the sendLaunchAnnouncement Cloud Function (Admin SDK
     // bypasses these rules); readable so pages can check whether the app is live.
     match /config/{docId} {

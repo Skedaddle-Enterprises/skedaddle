@@ -9,6 +9,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Firebase SDK (compat) — for self-hosted pageview analytics -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
   <style>
     /* ── RESET ──────────────────────────────────────────────── */
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -419,5 +424,8 @@
     window.addEventListener('load', layout);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   </script>
+
+  <!-- Self-hosted pageview analytics (see Admin dashboard) -->
+  <script src="analytics.js"></script>
 </body>
 </html>
