@@ -1,0 +1,13 @@
+import type { MetadataRoute } from 'next';
+
+export const dynamic = 'force-static';
+
+const siteUrl = 'https://skedaddle.example.com'; // TODO: replace with the real production domain
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const routes = ['', '/team', '/privacy', '/terms', '/trust', '/support', '/delete-account', '/child-safety'];
+  return routes.map((route) => ({
+    url: `${siteUrl}${route}`,
+    lastModified: new Date(),
+  }));
+}

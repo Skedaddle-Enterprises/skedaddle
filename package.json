@@ -1,24 +1,28 @@
 {
   "name": "skedaddle",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "description": "Skedaddle marketing site and Cloud Functions — a Next.js (apps/web) monorepo backed by Firebase Hosting/Firestore/Functions.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:tokens": "node packages/tokens/build.mjs",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build:web": "npm run build:tokens && npm run build --workspace=apps/web"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swethaguruju/skedaddle.git"
+    "url": "git+https://github.com/Skedaddle-Enterprises/skedaddle.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "UNLICENSED",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/swethaguruju/skedaddle/issues"
+    "url": "https://github.com/Skedaddle-Enterprises/skedaddle/issues"
   },
-  "homepage": "https://github.com/swethaguruju/skedaddle#readme",
-  "dependencies": {
-    "firebase": "^12.13.0"
-  }
+  "homepage": "https://github.com/Skedaddle-Enterprises/skedaddle#readme"
 }

@@ -1,0 +1,10 @@
+{
+  "name": "@skedaddle/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "tokens.json",
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}
