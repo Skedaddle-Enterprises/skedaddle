@@ -34,17 +34,31 @@
   } catch (e) { vid = 'v_anon'; }
 
   // Resolve coarse location once per session (cached), so we don't hammer the
-  // geo API on every navigation. Falls back to empty location on any failure.
+  // geo APIs on every navigation. Tries providers in order for better accuracy,
+  // and falls back to an empty location on total failure.
+  function fromIpapi(g) {
+    if (!g || g.error) return null;
+    if (!g.country_code && !g.country) return null;
+    return { country: g.country_name || g.country, countryCode: g.country_code, region: g.region, city: g.city };
+  }
+  function fromIpwho(g) {
+    if (!g || g.success === false) return null;
+    return { country: g.country, countryCode: g.country_code, region: g.region, city: g.city };
+  }
+  function tryProvider(url, parse) {
+    return fetch(url, { cache: 'no-store' })
+      .then(function (r) { return r.json(); })
+      .then(function (g) { var geo = parse(g); if (!geo) throw new Error('bad'); return geo; });
+  }
   function getGeo() {
     try {
       var cached = sessionStorage.getItem('sk_geo');
       if (cached) return Promise.resolve(JSON.parse(cached));
     } catch (e) {}
-    return fetch('https://ipwho.is/', { cache: 'no-store' })
-      .then(function (r) { return r.json(); })
-      .then(function (g) {
-        if (!g || g.success === false) return {};
-        var geo = { country: g.country, countryCode: g.country_code, region: g.region, city: g.city };
+    // ipapi.co (MaxMind-based) tends to be more accurate; ipwho.is is the fallback.
+    return tryProvider('https://ipapi.co/json/', fromIpapi)
+      .catch(function () { return tryProvider('https://ipwho.is/', fromIpwho); })
+      .then(function (geo) {
         try { sessionStorage.setItem('sk_geo', JSON.stringify(geo)); } catch (e) {}
         return geo;
       })

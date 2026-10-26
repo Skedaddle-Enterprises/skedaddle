@@ -1,14 +1,23 @@
 rules_version = '2';
 
-// TODO: For stronger security, convert Admin.html to use Firebase Auth
-// (email/password sign-in) and gate `read` on `request.auth != null`.
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /waitlist/{docId} {
-      allow read: if true;
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
 
+    match /waitlist/{docId} {
+      // Waitlist entries contain signup emails — only an authenticated
+      // admin (custom claim `admin: true`, see scripts/set-admin-claim.mjs)
+      // may read them. Previously `allow read: if true`, which made every
+      // signup email publicly readable — that was a real vulnerability.
+      allow read: if isAdmin();
+
+      // Anonymous auth (see lib/waitlist.ts) is required to create a
+      // waitlist entry; field validation is unchanged from before.
       allow create: if
-        request.resource.data.keys().hasOnly(['email', 'source', 'timestamp', 'page', 'userAgent'])
+        request.auth != null
+        && request.resource.data.keys().hasOnly(['email', 'source', 'timestamp', 'page', 'userAgent'])
         && request.resource.data.email is string
         && request.resource.data.email.size() > 3
         && request.resource.data.email.size() < 254
@@ -19,6 +28,14 @@ service cloud.firestore {
         && request.resource.data.userAgent is string
         && request.resource.data.userAgent.size() < 200;
 
+      allow update, delete: if false;
+    }
+
+    // Best-effort audit trail written by the admin dashboard when a
+    // waitlist entry is deleted. Only admins may read/create; never
+    // mutated or removed once written.
+    match /adminAudit/{docId} {
+      allow read, create: if isAdmin();
       allow update, delete: if false;
     }
 

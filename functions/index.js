@@ -1,20 +1,21 @@
 const functions = require('firebase-functions');
 const { defineSecret } = require('firebase-functions/params');
 const admin = require('firebase-admin');
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 
 admin.initializeApp();
 const db = admin.firestore();
 
-const SENDGRID_API_KEY = defineSecret('SENDGRID_API_KEY');
+const ZOHO_SMTP_USER = defineSecret('ZOHO_SMTP_USER');
+const ZOHO_SMTP_PASSWORD = defineSecret('ZOHO_SMTP_PASSWORD');
 const ADMIN_TRIGGER_SECRET = defineSecret('ADMIN_TRIGGER_SECRET');
 
 // Where new-signup alerts go. Change if you want a different inbox.
-const ADMIN_NOTIFY_EMAIL = 'mr.mack85@skedaddleenterprises26.com';
+const ADMIN_NOTIFY_EMAIL = 'help@skedaddleenterprises26.com';
 
-// Must be a verified sender (or verified domain) in your SendGrid account,
-// otherwise every send below will fail with a 403 from the SendGrid API.
-const SENDER_EMAIL = 'hello@skedaddleinc.com';
+// Must be the Zoho mailbox whose credentials are stored in ZOHO_SMTP_USER /
+// ZOHO_SMTP_PASSWORD below, otherwise Zoho's SMTP server will reject the send.
+const SENDER_EMAIL = 'support@skedaddleenterprises26.com';
 const SENDER_NAME = 'Skedaddle';
 
 // Fill these in with the real store listing URLs before triggering the
@@ -28,19 +29,32 @@ function setCors(res) {
   res.set('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Secret');
 }
 
+function getTransporter() {
+  return nodemailer.createTransport({
+    host: 'smtp.zoho.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: ZOHO_SMTP_USER.value(),
+      pass: ZOHO_SMTP_PASSWORD.value(),
+    },
+  });
+}
+
 // Fires every time a new email lands in the `waitlist` collection.
 // Sends a one-line alert to ADMIN_NOTIFY_EMAIL, and a confirmation to the
 // person who just signed up, so both sides know it went through.
 exports.notifyOnSignup = functions
-  .runWith({ secrets: [SENDGRID_API_KEY] })
+  .runWith({ secrets: [ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD] })
   .firestore.document('waitlist/{docId}')
   .onCreate(async (snap) => {
     const data = snap.data();
-    sgMail.setApiKey(SENDGRID_API_KEY.value());
+    const transporter = getTransporter();
+    const from = `"${SENDER_NAME}" <${SENDER_EMAIL}>`;
 
-    const adminAlert = sgMail.send({
+    const adminAlert = transporter.sendMail({
+      from,
       to: ADMIN_NOTIFY_EMAIL,
-      from: { email: SENDER_EMAIL, name: SENDER_NAME },
       subject: `New waitlist signup: ${data.email}`,
       text: [
         `${data.email} just joined the Skedaddle waitlist.`,
@@ -61,9 +75,9 @@ exports.notifyOnSignup = functions
         </div>
       </div>`;
 
-    const welcomeEmail = sgMail.send({
+    const welcomeEmail = transporter.sendMail({
+      from,
       to: data.email,
-      from: { email: SENDER_EMAIL, name: SENDER_NAME },
       subject: "You're on the Skedaddle waitlist",
       text: "You've joined the Skedaddle waitlist. We'll email you the moment we launch — with links to download the app.",
       html: welcomeHtml,
@@ -72,10 +86,11 @@ exports.notifyOnSignup = functions
     await Promise.all([adminAlert, welcomeEmail]);
   });
 
-// Manually triggered from Admin.html's "Send Launch Announcement" button.
-// Emails everyone currently in the waitlist collection, once, that the app is live.
+// Manually triggered from the admin dashboard's "Send Launch Announcement"
+// action. Emails everyone currently in the waitlist collection, once, that
+// the app is live.
 exports.sendLaunchAnnouncement = functions
-  .runWith({ secrets: [SENDGRID_API_KEY, ADMIN_TRIGGER_SECRET] })
+  .runWith({ secrets: [ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD, ADMIN_TRIGGER_SECRET] })
   .https.onRequest(async (req, res) => {
     setCors(res);
     if (req.method === 'OPTIONS') return res.status(204).send('');
@@ -103,7 +118,8 @@ exports.sendLaunchAnnouncement = functions
       return res.status(200).json({ sent: 0 });
     }
 
-    sgMail.setApiKey(SENDGRID_API_KEY.value());
+    const transporter = getTransporter();
+    const from = `"${SENDER_NAME}" <${SENDER_EMAIL}>`;
 
     const html = `
       <div style="font-family:Helvetica,Arial,sans-serif;background:#F5F0E1;padding:32px 16px">
@@ -120,24 +136,24 @@ exports.sendLaunchAnnouncement = functions
         </div>
       </div>`;
 
-    const CHUNK = 500; // SendGrid's per-request recipient cap for `isMultiple`
+    const text = [
+      "Skedaddle is officially live.",
+      "",
+      `App Store: ${APP_STORE_URL}`,
+      `Google Play: ${PLAY_STORE_URL}`,
+    ].join('\n');
+
+    // Sent individually (not one email with every address visible) so
+    // recipients' addresses stay private from each other, same as the
+    // previous SendGrid isMultiple behavior.
     let sent = 0;
-    for (let i = 0; i < emails.length; i += CHUNK) {
-      const chunk = emails.slice(i, i + CHUNK);
-      await sgMail.send({
-        to: chunk,
-        isMultiple: true,
-        from: { email: SENDER_EMAIL, name: SENDER_NAME },
-        subject: "Skedaddle is live!",
-        text: [
-          "Skedaddle is officially live.",
-          "",
-          `App Store: ${APP_STORE_URL}`,
-          `Google Play: ${PLAY_STORE_URL}`,
-        ].join('\n'),
-        html,
-      });
-      sent += chunk.length;
+    for (const email of emails) {
+      try {
+        await transporter.sendMail({ from, to: email, subject: 'Skedaddle is live!', text, html });
+        sent += 1;
+      } catch (err) {
+        console.error(`Failed to send launch announcement to ${email}:`, err);
+      }
     }
 
     const sentAt = admin.firestore.FieldValue.serverTimestamp();

@@ -1,8 +1,14 @@
 node_modules/
 .env
-.firebase/
-
-.env
+.env.local
 .firebase/
 *.log
 created landing page
+
+# Next.js (apps/web)
+apps/web/.next/
+apps/web/out/
+apps/web/next-env.d.ts
+
+# Never commit a Firebase service-account credential
+*service-account*.json
