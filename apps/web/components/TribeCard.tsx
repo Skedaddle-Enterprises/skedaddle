@@ -47,8 +47,13 @@ export default function TribeCard() {
             <span className="sk-tag green">🏃 Trail Running</span>
             <span className="sk-tag violet">🥑 Avocado Toast</span>
           </div>
-          <button className="tribe-cta">Join This Tribe</button>
-          <div className="tribe-see-another">See Another Option</div>
+          {/* A sample tribe: both lead to the waitlist until the apps are public. */}
+          <a href="#waitlist" className="tribe-cta">
+            Join This Tribe
+          </a>
+          <a href="#waitlist" className="tribe-see-another">
+            See Another Option
+          </a>
         </div>
         <div className="tribe-text">
           <div className="sk-label" style={{ marginBottom: 8 }}>

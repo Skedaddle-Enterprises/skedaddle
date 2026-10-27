@@ -202,9 +202,9 @@ body {
     .tribe-avatar{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--surf);margin-right:-10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;font-family:'Manrope',sans-serif;font-weight:700;color:#fff;font-size:14px}
     .tribe-avatar-more{width:40px;height:40px;border-radius:50%;border:2.5px solid var(--surf);background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
     .tribe-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-    .tribe-cta{width:100%;background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;margin-bottom:10px;transition:background .2s}
+    .tribe-cta{display:block;text-align:center;text-decoration:none;width:100%;background:var(--navy);color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;padding:14px;border-radius:12px;border:none;cursor:pointer;margin-bottom:10px;transition:background .2s}
     .tribe-cta:hover{background:var(--violet)}
-    .tribe-see-another{text-align:center;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+    .tribe-see-another{display:block;text-align:center;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
     .tribe-text h2{font-family:Georgia,serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:700;color:var(--navy);line-height:1.12;margin-bottom:16px}
     .tribe-text h2 em{font-style:italic;color:var(--amber)}
     .tribe-text p{font-size:14px;font-weight:400;color:var(--muted);line-height:1.75;margin-bottom:12px}
