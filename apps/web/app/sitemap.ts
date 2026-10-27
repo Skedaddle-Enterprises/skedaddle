@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export const dynamic = 'force-static';
 
-const siteUrl = 'https://skedaddle.example.com'; // TODO: replace with the real production domain
+const siteUrl = 'https://skedaddleenterprises26.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ['', '/team', '/privacy', '/terms', '/trust', '/support', '/delete-account', '/child-safety'];
