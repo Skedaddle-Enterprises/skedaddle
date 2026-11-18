@@ -47,6 +47,46 @@ function getTransporter() {
   });
 }
 
+// The beta email: sent to every new signup (notifyOnSignup) and, once, to everyone who
+// signed up before that went live (sendBetaInvite). Same content, so it lives here once.
+const BETA_SUBJECT = "You're in: try the Skedaddle beta";
+const BETA_HTML = `
+  <div style="font-family:Helvetica,Arial,sans-serif;background:#F5F0E1;padding:32px 16px">
+    <div style="max-width:480px;margin:0 auto;background:#FFFCF6;border-radius:16px;padding:32px;text-align:center">
+      <img src="https://skedaddleenterprises26.com/email-logo.png" width="64" height="64" alt="Skedaddle" style="display:block;margin:0 auto 16px;border:0">
+      <h1 style="font-family:Georgia,serif;font-size:22px;color:#2C3B2F;margin:0 0 12px">You're in! 🎉</h1>
+      <p style="font-size:14px;color:#56635A;line-height:1.6;margin:0 0 24px">
+        The Skedaddle beta is open. Sign up takes a minute: verify your phone number with a text code and you're in.
+      </p>
+      <div>
+        <a href="${TESTFLIGHT_URL}" style="display:inline-block;background:#2C3B2F;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">iPhone: Get it on TestFlight</a>
+        <a href="${PLAY_BETA_URL}" style="display:inline-block;background:#C8784A;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">Android: Get it on Google Play</a>
+      </div>
+      <p style="font-size:12px;color:#56635A;line-height:1.6;margin:16px 0 0">
+        iPhone: install TestFlight from the App Store first, then tap the button.<br>
+        Android: tap "Become a tester", then install from Google Play (US only for now).<br>
+        Tell us what works and what doesn't. Just reply to this email.
+      </p>
+    </div>
+    <p style="max-width:480px;margin:16px auto 0;font-size:11px;color:#8A938C;text-align:center;line-height:1.6">
+      Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}<br>
+      You're getting this because you signed up at skedaddleenterprises26.com. Don't want these emails? Reply "unsubscribe" and we'll remove you.
+    </p>
+  </div>`;
+
+const BETA_TEXT = [
+  "You're in! The Skedaddle beta is open.",
+  '',
+  `iPhone (install TestFlight from the App Store first): ${TESTFLIGHT_URL}`,
+  `Android (tap "Become a tester", US only for now): ${PLAY_BETA_URL}`,
+  '',
+  "Sign up takes a minute: verify your phone number with a text code and you're in.",
+  "Tell us what works and what doesn't. Just reply to this email.",
+  '',
+  `Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}`,
+  'Don\'t want these emails? Reply "unsubscribe" and we\'ll remove you.',
+].join('\n');
+
 // Fires every time a new email lands in the `waitlist` collection.
 // Sends a one-line alert to ADMIN_NOTIFY_EMAIL, and the beta download links
 // (TestFlight + Play open testing) to the person who just signed up.
@@ -70,49 +110,12 @@ exports.notifyOnSignup = functions
       ].join('\n'),
     });
 
-    const welcomeHtml = `
-      <div style="font-family:Helvetica,Arial,sans-serif;background:#F5F0E1;padding:32px 16px">
-        <div style="max-width:480px;margin:0 auto;background:#FFFCF6;border-radius:16px;padding:32px;text-align:center">
-          <img src="https://skedaddleenterprises26.com/email-logo.png" width="64" height="64" alt="Skedaddle" style="display:block;margin:0 auto 16px;border:0">
-          <h1 style="font-family:Georgia,serif;font-size:22px;color:#2C3B2F;margin:0 0 12px">You're in! 🎉</h1>
-          <p style="font-size:14px;color:#56635A;line-height:1.6;margin:0 0 24px">
-            The Skedaddle beta is open. Sign up takes a minute: verify your phone number with a text code and you're in.
-          </p>
-          <div>
-            <a href="${TESTFLIGHT_URL}" style="display:inline-block;background:#2C3B2F;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">iPhone: Get it on TestFlight</a>
-            <a href="${PLAY_BETA_URL}" style="display:inline-block;background:#C8784A;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">Android: Get it on Google Play</a>
-          </div>
-          <p style="font-size:12px;color:#56635A;line-height:1.6;margin:16px 0 0">
-            iPhone: install TestFlight from the App Store first, then tap the button.<br>
-            Android: tap "Become a tester", then install from Google Play (US only for now).<br>
-            Tell us what works and what doesn't. Just reply to this email.
-          </p>
-        </div>
-        <p style="max-width:480px;margin:16px auto 0;font-size:11px;color:#8A938C;text-align:center;line-height:1.6">
-          Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}<br>
-          You're getting this because you signed up at skedaddleenterprises26.com. Don't want these emails? Reply "unsubscribe" and we'll remove you.
-        </p>
-      </div>`;
-
-    const welcomeText = [
-      "You're in! The Skedaddle beta is open.",
-      '',
-      `iPhone (install TestFlight from the App Store first): ${TESTFLIGHT_URL}`,
-      `Android (tap "Become a tester", US only for now): ${PLAY_BETA_URL}`,
-      '',
-      "Sign up takes a minute: verify your phone number with a text code and you're in.",
-      "Tell us what works and what doesn't. Just reply to this email.",
-      '',
-      `Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}`,
-      'Don\'t want these emails? Reply "unsubscribe" and we\'ll remove you.',
-    ].join('\n');
-
     const welcomeEmail = transporter.sendMail({
       from,
       to: data.email,
-      subject: "You're in: try the Skedaddle beta",
-      text: welcomeText,
-      html: welcomeHtml,
+      subject: BETA_SUBJECT,
+      text: BETA_TEXT,
+      html: BETA_HTML,
     });
 
     await Promise.all([adminAlert, welcomeEmail]);
@@ -195,4 +198,67 @@ exports.sendLaunchAnnouncement = functions
     ]);
 
     res.status(200).json({ sent });
+  });
+
+// One-time: emails the beta links to everyone who joined the waitlist before notifyOnSignup
+// started sending them (live since 2026-11-18 22:20 UTC). Later signups already got the
+// email from notifyOnSignup, so they're skipped. POST with the X-Admin-Secret header:
+//   { "dryRun": true }  -> just returns who would be emailed (count only), sends nothing
+//   {}                  -> sends; refuses a second run unless { "force": true }
+const BETA_EMAIL_LIVE_AT = new Date('2026-11-18T22:20:00Z');
+
+exports.sendBetaInvite = functions
+  .runWith({ secrets: [ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD, ADMIN_TRIGGER_SECRET], timeoutSeconds: 300 })
+  .https.onRequest(async (req, res) => {
+    setCors(res);
+    if (req.method === 'OPTIONS') return res.status(204).send('');
+    if (req.method !== 'POST') return res.status(405).send('Method not allowed');
+    if (req.get('X-Admin-Secret') !== ADMIN_TRIGGER_SECRET.value()) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const body = req.body || {};
+    const metaRef = db.collection('meta').doc('betaInvite');
+    const metaSnap = await metaRef.get();
+    if (metaSnap.exists && metaSnap.data().sentAt && body.force !== true && body.dryRun !== true) {
+      return res.status(409).json({
+        error: 'Beta invite was already sent. Pass { "force": true } to resend.',
+        sentAt: metaSnap.data().sentAt.toDate(),
+        count: metaSnap.data().count,
+      });
+    }
+
+    // An address that also signed up after go-live already has the email, so skip it entirely.
+    const snap = await db.collection('waitlist').get();
+    const before = new Set();
+    const after = new Set();
+    for (const d of snap.docs) {
+      const email = String(d.data().email || '').trim().toLowerCase();
+      if (!email) continue;
+      const ts = d.data().timestamp;
+      (ts && ts.toDate() >= BETA_EMAIL_LIVE_AT ? after : before).add(email);
+    }
+    const emails = [...before].filter((e) => !after.has(e));
+
+    if (body.dryRun === true) {
+      return res.status(200).json({ wouldSend: emails.length, skippedAlreadyEmailed: after.size });
+    }
+
+    const transporter = getTransporter();
+    const from = `"${SENDER_NAME}" <${SENDER_EMAIL}>`;
+    let sent = 0;
+    const failed = [];
+    // One email per person so nobody sees anyone else's address.
+    for (const email of emails) {
+      try {
+        await transporter.sendMail({ from, to: email, subject: BETA_SUBJECT, text: BETA_TEXT, html: BETA_HTML });
+        sent += 1;
+      } catch (err) {
+        console.error('sendBetaInvite failed for one recipient:', err.message);
+        failed.push(email);
+      }
+    }
+
+    await metaRef.set({ sentAt: admin.firestore.FieldValue.serverTimestamp(), count: sent, failed: failed.length });
+    res.status(200).json({ sent, failed: failed.length });
   });
