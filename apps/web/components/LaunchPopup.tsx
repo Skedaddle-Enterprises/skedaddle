@@ -58,6 +58,11 @@ export default function LaunchPopup() {
                 {status === 'saving' ? 'Saving...' : 'Send me the beta'}
               </button>
             </div>
+            {status === 'error' && (
+              <p style={{ color: '#B5482C', fontSize: 12, marginBottom: 8 }}>
+                {email.includes('@') ? 'Something went wrong. Please try again.' : 'Enter a valid email.'}
+              </p>
+            )}
             <button className="popup-dismiss" onClick={() => setVisible(false)}>
               Maybe later
             </button>

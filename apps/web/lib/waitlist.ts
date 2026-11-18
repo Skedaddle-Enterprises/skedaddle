@@ -19,13 +19,23 @@ export async function saveToWaitlist(email: string, source: WaitlistSource): Pro
     }
 
     const db = getDb();
-    await addDoc(collection(db, 'waitlist'), {
-      email,
-      source,
-      timestamp: serverTimestamp(),
-      page: typeof window !== 'undefined' ? window.location.href : '',
-      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 100) : '',
-    });
+    const write = () =>
+      addDoc(collection(db, 'waitlist'), {
+        email,
+        source,
+        timestamp: serverTimestamp(),
+        page: typeof window !== 'undefined' ? window.location.href : '',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent.substring(0, 100) : '',
+      });
+    try {
+      await write();
+    } catch {
+      // Right after the first anonymous sign-in, Firestore can still be sending the request
+      // without the new auth token, so the rules reject it (the "first click does nothing,
+      // second click works" bug). One retry once the token has landed fixes it.
+      await new Promise((r) => setTimeout(r, 800));
+      await write();
+    }
     return true;
   } catch (err) {
     console.error('Firestore error:', err);

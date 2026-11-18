@@ -73,7 +73,7 @@ exports.notifyOnSignup = functions
     const welcomeHtml = `
       <div style="font-family:Helvetica,Arial,sans-serif;background:#F5F0E1;padding:32px 16px">
         <div style="max-width:480px;margin:0 auto;background:#FFFCF6;border-radius:16px;padding:32px;text-align:center">
-          <div style="width:48px;height:48px;background:#2C3B2F;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:16px">S</div>
+          <img src="https://skedaddleenterprises26.com/email-logo.png" width="64" height="64" alt="Skedaddle" style="display:block;margin:0 auto 16px;border:0">
           <h1 style="font-family:Georgia,serif;font-size:22px;color:#2C3B2F;margin:0 0 12px">You're in! 🎉</h1>
           <p style="font-size:14px;color:#56635A;line-height:1.6;margin:0 0 24px">
             The Skedaddle beta is open. Sign up takes a minute: verify your phone number with a text code and you're in.
