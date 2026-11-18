@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { saveToWaitlist } from '@/lib/waitlist';
+import { TESTFLIGHT_URL, PLAY_BETA_URL } from '@/lib/beta';
 
 export default function LaunchPopup() {
   const [visible, setVisible] = useState(false);
@@ -37,13 +38,13 @@ export default function LaunchPopup() {
               ✕
             </button>
             <div className="popup-icon">🚀</div>
-            <div className="popup-badge">Coming soon</div>
+            <div className="popup-badge">Beta now open</div>
             <h2>
-              App <em>launching</em> soon.
+              Try <em>Skedaddle</em> first.
             </h2>
             <p>
-              Skedaddle is putting the finishing touches on the coordination engine. Drop your
-              email and you&apos;ll be first through the door when we launch in your city.
+              The beta is live on iPhone and Android. Drop your email and we&apos;ll send you the
+              download links right away.
             </p>
             <div className="popup-form">
               <input
@@ -54,18 +55,27 @@ export default function LaunchPopup() {
                 style={status === 'error' ? { borderColor: '#B5482C' } : undefined}
               />
               <button onClick={handleSubmit} disabled={status === 'saving'}>
-                {status === 'saving' ? 'Saving...' : 'Notify me'}
+                {status === 'saving' ? 'Saving...' : 'Send me the beta'}
               </button>
             </div>
             <button className="popup-dismiss" onClick={() => setVisible(false)}>
-              No thanks, I&apos;ll wait
+              Maybe later
             </button>
           </>
         ) : (
           <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div style={{ fontSize: '2.5rem', marginBottom: 14 }}>✅</div>
-            <h2 style={{ marginBottom: 8 }}>You&apos;re on the list!</h2>
-            <p>We&apos;ll reach out as soon as Skedaddle launches in your city.</p>
+            <h2 style={{ marginBottom: 8 }}>Check your inbox!</h2>
+            <p>We just emailed you the beta links. Or grab it now:</p>
+            <p style={{ marginTop: 12, lineHeight: 2 }}>
+              <a href={TESTFLIGHT_URL} target="_blank" rel="noopener noreferrer">
+                <strong>iPhone:</strong> Get it on TestFlight
+              </a>
+              <br />
+              <a href={PLAY_BETA_URL} target="_blank" rel="noopener noreferrer">
+                <strong>Android:</strong> Get it on Google Play
+              </a>
+            </p>
             <button className="btn-primary" style={{ marginTop: 18 }} onClick={() => setVisible(false)}>
               Close
             </button>

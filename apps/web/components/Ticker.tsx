@@ -1,10 +1,9 @@
 const ITEMS = [
-  'App launching soon',
-  'Join the waitlist today',
+  'Beta now open',
+  'Now on iPhone and Android',
   'AI-matched real-world experiences',
-  'Now accepting early access signups',
+  'Get the beta today',
   'Tribes · Family Pods · Community OS',
-  'Launching in select cities soon',
   'Connection Graph™ — your social moat',
 ];
 

@@ -255,7 +255,7 @@ export default function TeamGraph() {
           More digitally connected than ever, and lonelier than ever. We decided to build the
           thing that turns aligned people into real-world belonging. Want in?
         </p>
-        <a href="/#waitlist">Join the waitlist</a>
+        <a href="/#waitlist">Get the beta</a>
       </section>
     </>
   );

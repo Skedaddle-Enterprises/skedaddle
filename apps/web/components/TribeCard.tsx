@@ -47,7 +47,7 @@ export default function TribeCard() {
             <span className="sk-tag green">🏃 Trail Running</span>
             <span className="sk-tag violet">🥑 Avocado Toast</span>
           </div>
-          {/* A sample tribe: both lead to the waitlist until the apps are public. */}
+          {/* A sample tribe: both lead to the beta signup form. */}
           <a href="#waitlist" className="tribe-cta">
             Join This Tribe
           </a>

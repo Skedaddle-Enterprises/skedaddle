@@ -21,7 +21,7 @@ export default function Hero() {
             </p>
             <div className="hero-btns">
               <a href="#waitlist" className="btn-primary">
-                Join the waitlist
+                Get the beta
               </a>
               <a href="#how" className="btn-secondary">
                 See how it works
