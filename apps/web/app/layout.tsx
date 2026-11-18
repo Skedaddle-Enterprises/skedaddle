@@ -17,7 +17,7 @@ const manrope = localFont({
   display: 'swap',
 });
 
-const siteUrl = 'https://skedaddle.example.com'; // TODO: replace with the real production domain
+const siteUrl = 'https://skedaddleenterprises26.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
