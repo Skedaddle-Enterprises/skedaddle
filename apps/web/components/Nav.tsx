@@ -34,7 +34,7 @@ export default function Nav() {
           ))}
           <li>
             <a href="/#waitlist" className="nav-cta">
-              Get early access
+              Get the beta
             </a>
           </li>
         </ul>
@@ -51,7 +51,7 @@ export default function Nav() {
           </a>
         ))}
         <a href="/#waitlist" onClick={() => setOpen(false)}>
-          Get early access
+          Get the beta
         </a>
       </div>
     </nav>

@@ -17,11 +17,17 @@ const ADMIN_NOTIFY_EMAIL = 'help@skedaddleenterprises26.com';
 // ZOHO_SMTP_PASSWORD below, otherwise Zoho's SMTP server will reject the send.
 const SENDER_EMAIL = 'support@skedaddleenterprises26.com';
 const SENDER_NAME = 'Skedaddle';
+// Postal address in every marketing email footer (required by CAN-SPAM).
+const MAILING_ADDRESS = '1343 NW 120th Way, Gainesville, FL 32606';
 
 // Fill these in with the real store listing URLs before triggering the
 // launch announcement — they're placeholders until the app is published.
 const APP_STORE_URL = 'https://apps.apple.com/app/idPASTE_YOUR_APP_ID';
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=PASTE_YOUR_PACKAGE_NAME';
+
+// Public beta links sent to every new signup. Also in apps/web/lib/beta.ts; keep both in sync.
+const TESTFLIGHT_URL = 'https://testflight.apple.com/join/YERuvqvg';
+const PLAY_BETA_URL = 'https://play.google.com/apps/testing/com.skedaddle.app';
 
 function setCors(res) {
   res.set('Access-Control-Allow-Origin', '*');
@@ -42,8 +48,8 @@ function getTransporter() {
 }
 
 // Fires every time a new email lands in the `waitlist` collection.
-// Sends a one-line alert to ADMIN_NOTIFY_EMAIL, and a confirmation to the
-// person who just signed up, so both sides know it went through.
+// Sends a one-line alert to ADMIN_NOTIFY_EMAIL, and the beta download links
+// (TestFlight + Play open testing) to the person who just signed up.
 exports.notifyOnSignup = functions
   .runWith({ secrets: [ZOHO_SMTP_USER, ZOHO_SMTP_PASSWORD] })
   .firestore.document('waitlist/{docId}')
@@ -68,18 +74,44 @@ exports.notifyOnSignup = functions
       <div style="font-family:Helvetica,Arial,sans-serif;background:#F5F0E1;padding:32px 16px">
         <div style="max-width:480px;margin:0 auto;background:#FFFCF6;border-radius:16px;padding:32px;text-align:center">
           <div style="width:48px;height:48px;background:#2C3B2F;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:16px">S</div>
-          <h1 style="font-family:Georgia,serif;font-size:22px;color:#2C3B2F;margin:0 0 12px">You're on the list! 🎉</h1>
-          <p style="font-size:14px;color:#56635A;line-height:1.6;margin:0 0 4px">
-            You've joined the Skedaddle waitlist. We'll email you the moment we launch — with links to download the app.
+          <h1 style="font-family:Georgia,serif;font-size:22px;color:#2C3B2F;margin:0 0 12px">You're in! 🎉</h1>
+          <p style="font-size:14px;color:#56635A;line-height:1.6;margin:0 0 24px">
+            The Skedaddle beta is open. Sign up takes a minute: verify your phone number with a text code and you're in.
+          </p>
+          <div>
+            <a href="${TESTFLIGHT_URL}" style="display:inline-block;background:#2C3B2F;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">iPhone: Get it on TestFlight</a>
+            <a href="${PLAY_BETA_URL}" style="display:inline-block;background:#C8784A;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;border-radius:999px;text-decoration:none;margin:0 6px 10px">Android: Get it on Google Play</a>
+          </div>
+          <p style="font-size:12px;color:#56635A;line-height:1.6;margin:16px 0 0">
+            iPhone: install TestFlight from the App Store first, then tap the button.<br>
+            Android: tap "Become a tester", then install from Google Play (US only for now).<br>
+            Tell us what works and what doesn't. Just reply to this email.
           </p>
         </div>
+        <p style="max-width:480px;margin:16px auto 0;font-size:11px;color:#8A938C;text-align:center;line-height:1.6">
+          Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}<br>
+          You're getting this because you signed up at skedaddleenterprises26.com. Don't want these emails? Reply "unsubscribe" and we'll remove you.
+        </p>
       </div>`;
+
+    const welcomeText = [
+      "You're in! The Skedaddle beta is open.",
+      '',
+      `iPhone (install TestFlight from the App Store first): ${TESTFLIGHT_URL}`,
+      `Android (tap "Become a tester", US only for now): ${PLAY_BETA_URL}`,
+      '',
+      "Sign up takes a minute: verify your phone number with a text code and you're in.",
+      "Tell us what works and what doesn't. Just reply to this email.",
+      '',
+      `Skedaddle Enterprises Inc · ${MAILING_ADDRESS} · ${SENDER_EMAIL}`,
+      'Don\'t want these emails? Reply "unsubscribe" and we\'ll remove you.',
+    ].join('\n');
 
     const welcomeEmail = transporter.sendMail({
       from,
       to: data.email,
-      subject: "You're on the Skedaddle waitlist",
-      text: "You've joined the Skedaddle waitlist. We'll email you the moment we launch — with links to download the app.",
+      subject: "You're in: try the Skedaddle beta",
+      text: welcomeText,
       html: welcomeHtml,
     });
 

@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { saveToWaitlist } from '@/lib/waitlist';
+import { TESTFLIGHT_URL, PLAY_BETA_URL } from '@/lib/beta';
 
 export default function WaitlistForm() {
   const [email, setEmail] = useState('');
-  const [msg, setMsg] = useState('No spam. Unsubscribe anytime. Early access users help shape the product.');
+  const [msg, setMsg] = useState('No spam. Unsubscribe anytime. Beta testers help shape the product.');
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
 
   async function handleSubmit(e: React.FormEvent) {
@@ -14,7 +15,7 @@ export default function WaitlistForm() {
     const ok = await saveToWaitlist(email, 'landing_page_cta');
     setEmail('');
     if (ok) {
-      setMsg("✓ You're on the list! We'll be in touch soon.");
+      setMsg('✓ Check your inbox! We just emailed you the beta links.');
       setStatus('done');
     } else {
       setMsg('Something went wrong. Please try again.');
@@ -31,8 +32,8 @@ export default function WaitlistForm() {
           the awkward phase?
         </h2>
         <p>
-          Join the Skedaddle waitlist and be among the first to experience social coordination
-          that actually works. Launching in select cities soon.
+          The Skedaddle beta is open on iPhone and Android. Drop your email and we&apos;ll send you
+          the download links right away.
         </p>
         <form className="email-form" onSubmit={handleSubmit}>
           <input
@@ -43,7 +44,7 @@ export default function WaitlistForm() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <button type="submit" disabled={status === 'saving'}>
-            {status === 'saving' ? 'Saving...' : 'Join waitlist'}
+            {status === 'saving' ? 'Saving...' : 'Send me the beta'}
           </button>
         </form>
         <p
@@ -58,6 +59,17 @@ export default function WaitlistForm() {
         >
           {msg}
         </p>
+        {status === 'done' && (
+          <p className="cta-note">
+            <a href={TESTFLIGHT_URL} target="_blank" rel="noopener noreferrer">
+              iPhone: TestFlight
+            </a>
+            {' · '}
+            <a href={PLAY_BETA_URL} target="_blank" rel="noopener noreferrer">
+              Android: Google Play
+            </a>
+          </p>
+        )}
       </div>
     </section>
   );
