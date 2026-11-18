@@ -34,7 +34,7 @@ const TEAM: Member[] = [
     ini: 'HA',
     color: '#4A6B8A',
     photo: '/harshathabhinav.jpg',
-    bio: "Harshathabhinav leads Skedaddle's Android engineering, owning everything from app architecture to release quality on the platform that carries the majority of our early users. He's responsible for building and maintaining the native Android app, integrating it with Skedaddle's backend and Assimilation Engine, and making sure every release feels fast, stable, and true to the product vision. As CTO, he also shapes the broader technical roadmap, working closely with the rest of the engineering team to keep the architecture scalable as Skedaddle grows.",
+    bio: "Harshathabhinav leads Skedaddle's technology across cloud, iOS and Android. He architected the serverless backend on Firebase and Google Cloud that powers both apps: tribe matching, student verification, and Scout, the AI planner. He also drives engineering on the native iOS (SwiftUI) and Android (Kotlin) apps. As CTO, he owns the technical roadmap, security and release quality, keeping Skedaddle fast, private and ready to scale city by city.",
   },
   {
     name: 'Taraka Mutyala',
