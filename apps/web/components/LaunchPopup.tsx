@@ -8,6 +8,7 @@ export default function LaunchPopup() {
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
+  const [errCode, setErrCode] = useState('');
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 1500);
@@ -20,8 +21,9 @@ export default function LaunchPopup() {
       return;
     }
     setStatus('saving');
-    const ok = await saveToWaitlist(email, 'popup');
-    setStatus(ok ? 'done' : 'error');
+    const err = await saveToWaitlist(email, 'popup');
+    setErrCode(err || '');
+    setStatus(err ? 'error' : 'done');
   }
 
   return (
@@ -60,7 +62,7 @@ export default function LaunchPopup() {
             </div>
             {status === 'error' && (
               <p style={{ color: '#B5482C', fontSize: 12, marginBottom: 8 }}>
-                {email.includes('@') ? 'Something went wrong. Please try again.' : 'Enter a valid email.'}
+                {email.includes('@') ? `Something went wrong (${errCode}). Please try again.` : 'Enter a valid email.'}
               </p>
             )}
             <button className="popup-dismiss" onClick={() => setVisible(false)}>
