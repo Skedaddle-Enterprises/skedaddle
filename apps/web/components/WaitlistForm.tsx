@@ -12,13 +12,13 @@ export default function WaitlistForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus('saving');
-    const ok = await saveToWaitlist(email, 'landing_page_cta');
-    setEmail('');
-    if (ok) {
+    const err = await saveToWaitlist(email, 'landing_page_cta');
+    if (!err) {
+      setEmail('');
       setMsg('✓ Check your inbox! We just emailed you the beta links.');
       setStatus('done');
     } else {
-      setMsg('Something went wrong. Please try again.');
+      setMsg(`Something went wrong (${err}). Please try again.`);
       setStatus('error');
     }
   }
