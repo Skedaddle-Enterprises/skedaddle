@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { getDb } from '@/lib/firebase';
+import { measureOpenAIAdsPageView } from '@/lib/openaiAds';
 
 // Self-hosted, cookie-free pageview analytics. Logs one row per page load to
 // the Firestore `pageviews` collection, with a coarse (city/country) location
@@ -71,6 +72,15 @@ function getGeo(): Promise<Geo> {
 
 export default function Analytics() {
   const pathname = usePathname();
+  const lastMeasuredPath = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!pathname || pathname === lastMeasuredPath.current) return;
+    lastMeasuredPath.current = pathname;
+    if (!pathname.startsWith('/admin')) {
+      measureOpenAIAdsPageView();
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (pathname?.startsWith('/admin')) return;
